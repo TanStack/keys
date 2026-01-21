@@ -5,6 +5,14 @@ title: "@tanstack/react-keys"
 
 # @tanstack/react-keys
 
+## Interfaces
+
+- [UseHotkeyOptions](interfaces/UseHotkeyOptions.md)
+- [UseHotkeySequenceOptions](interfaces/UseHotkeySequenceOptions.md)
+
 ## Functions
 
-- [useTemplate](functions/useTemplate.md)
+- [useHeldKeys](functions/useHeldKeys.md)
+- [useHotkey](functions/useHotkey.md)
+- [useHotkeySequence](functions/useHotkeySequence.md)
+- [useKeyHold](functions/useKeyHold.md)

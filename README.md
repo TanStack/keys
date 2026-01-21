@@ -31,6 +31,7 @@
 <div align="center">
 
 ### [Become a Sponsor!](https://github.com/sponsors/tannerlinsley/)
+
 </div>
 
 # TanStack Keys
@@ -99,14 +100,19 @@ Type-safe keyboard shortcuts for the web. Template strings, parsed objects, cros
 import { useHotkey, formatForDisplay } from '@tanstack/react-keys'
 
 function Editor() {
-  useHotkey('Mod+S', (e, { hotkey }) => {
-    save()
-  }, { preventDefault: true, requireReset: true })
+  useHotkey(
+    'Mod+S',
+    (e, { hotkey }) => {
+      save()
+    },
+    { preventDefault: true, requireReset: true },
+  )
 
   return (
     <div>
       <button>Save</button>
-      <span>{formatForDisplay('Mod+S')}</span>  {/* e.g. "⌘S" on Mac, "Ctrl+S" on Windows */}
+      <span>{formatForDisplay('Mod+S')}</span>{' '}
+      {/* e.g. "⌘S" on Mac, "Ctrl+S" on Windows */}
     </div>
   )
 }

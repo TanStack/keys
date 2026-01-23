@@ -1,11 +1,11 @@
+import { detectPlatform, normalizeKeyName } from './constants'
+import { parseHotkey } from './parse'
 import type {
   Hotkey,
   HotkeyCallback,
   HotkeyCallbackContext,
   ParsedHotkey,
 } from './types'
-import { detectPlatform, normalizeKeyName } from './constants'
-import { parseHotkey } from './parse'
 
 /**
  * Checks if a KeyboardEvent matches a hotkey.
@@ -150,7 +150,10 @@ export function createMultiHotkeyHandler(
   const resolvedPlatform = platform ?? detectPlatform()
 
   // Pre-parse all hotkeys for efficiency
-  const parsedHandlers = Object.entries(handlers)
+  const handlerEntries = Object.entries(handlers) as Array<
+    [string, HotkeyCallback | undefined]
+  >
+  const parsedHandlers = handlerEntries
     .filter(
       (entry): entry is [string, HotkeyCallback] => entry[1] !== undefined,
     )
@@ -184,7 +187,7 @@ export function createMultiHotkeyHandler(
  * Used internally to provide the hotkey string in callback context.
  */
 function formatParsedHotkey(parsed: ParsedHotkey): Hotkey {
-  const parts: string[] = []
+  const parts: Array<string> = []
 
   if (parsed.ctrl) parts.push('Control')
   if (parsed.alt) parts.push('Alt')

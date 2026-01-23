@@ -13,8 +13,8 @@ export function detectPlatform(): 'mac' | 'windows' | 'linux' {
     return 'linux' // Default for SSR
   }
 
-  const platform = navigator.platform?.toLowerCase() ?? ''
-  const userAgent = navigator.userAgent?.toLowerCase() ?? ''
+  const platform = navigator.platform.toLowerCase()
+  const userAgent = navigator.userAgent.toLowerCase()
 
   if (platform.includes('mac') || userAgent.includes('mac')) {
     return 'mac'
@@ -310,7 +310,7 @@ export const KEY_DISPLAY_SYMBOLS: Record<string, string> = {
  * Canonical order for modifiers in normalized strings.
  * This ensures consistent output: Control+Alt+Shift+Meta+Key
  */
-export const MODIFIER_ORDER: CanonicalModifier[] = [
+export const MODIFIER_ORDER: Array<CanonicalModifier> = [
   'Control',
   'Alt',
   'Shift',

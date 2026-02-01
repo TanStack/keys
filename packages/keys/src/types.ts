@@ -177,6 +177,13 @@ export type HeldKey = CanonicalModifier | Key
  * Single modifier + key combinations.
  * Uses canonical modifiers (4) + Mod (1) = 5 modifiers.
  * Shift combinations exclude PunctuationKey to avoid layout-dependent issues.
+ * 
+ * The `Mod` modifier is platform-adaptive:
+ * - **macOS**: Resolves to `Meta` (Command key ⌘)
+ * - **Windows/Linux**: Resolves to `Control` (Ctrl key)
+ * 
+ * This enables cross-platform hotkey definitions that automatically adapt to the platform.
+ * For example, `Mod+S` becomes `Command+S` on Mac and `Ctrl+S` on Windows/Linux.
  */
 type SingleModifierHotkey =
   | `Control+${Key}`
@@ -187,7 +194,13 @@ type SingleModifierHotkey =
 
 /**
  * Two modifier + key combinations.
- * Shift combinations exclude PunctuationKey to avoid layout-dependent issues.
+ * Shift combinations exclude Numbers and PunctuationKeys to avoid layout-dependent issues.
+ *
+ * **Platform-adaptive `Mod` combinations:**
+ * - `Mod+Alt` and `Mod+Shift` are included (safe on all platforms)
+ * - `Mod+Control` and `Mod+Meta` are excluded because they create duplicate modifiers:
+ *   - `Mod+Control` duplicates `Control` on Windows/Linux (Mod = Control)
+ *   - `Mod+Meta` duplicates `Meta` on macOS (Mod = Meta)
  */
 type TwoModifierHotkey =
   | `Control+Alt+${Key}`
@@ -198,12 +211,16 @@ type TwoModifierHotkey =
   | `Shift+Meta+${ShiftUnaffectedKey}`
   | `Mod+Alt+${Key}`
   | `Mod+Shift+${ShiftUnaffectedKey}`
-  | `Mod+Control+${Key}`
-  | `Mod+Meta+${Key}`
 
 /**
  * Three modifier + key combinations.
- * Shift combinations exclude PunctuationKey to avoid layout-dependent issues.
+ * Shift combinations exclude Numbers and PunctuationKeys to avoid layout-dependent issues.
+ *
+ * **Platform-adaptive `Mod` combinations:**
+ * - `Mod+Alt+Shift` is included (safe on all platforms)
+ * - `Mod+Control+Shift` and `Mod+Shift+Meta` are excluded because they create duplicate modifiers:
+ *   - `Mod+Control+Shift` duplicates `Control` on Windows/Linux (Mod = Control)
+ *   - `Mod+Shift+Meta` duplicates `Meta` on macOS (Mod = Meta)
  */
 type ThreeModifierHotkey =
   | `Control+Alt+Shift+${ShiftUnaffectedKey}`
@@ -211,8 +228,21 @@ type ThreeModifierHotkey =
   | `Control+Shift+Meta+${ShiftUnaffectedKey}`
   | `Alt+Shift+Meta+${ShiftUnaffectedKey}`
   | `Mod+Alt+Shift+${ShiftUnaffectedKey}`
-  | `Mod+Control+Shift+${ShiftUnaffectedKey}`
-  | `Mod+Shift+Meta+${ShiftUnaffectedKey}`
+
+/**
+ * Four modifier + key combinations.
+ * Shift combinations exclude Numbers and PunctuationKeys to avoid layout-dependent issues.
+ *
+ * Only the canonical `Control+Alt+Shift+Meta` combination is included.
+ * 
+ * **Why no `Mod` combinations?**
+ * Since `Mod` resolves to either `Control` (Windows/Linux) or `Meta` (macOS), any
+ * four-modifier combination with `Mod` would create duplicate modifiers on one platform.
+ * For example:
+ * - `Mod+Control+Alt+Shift` → duplicates `Control` on Windows/Linux
+ * - `Mod+Alt+Shift+Meta` → duplicates `Meta` on macOS
+ */
+type FourModifierHotkey = `Control+Alt+Shift+Meta+${ShiftUnaffectedKey}`
 
 /**
  * A type-safe hotkey string.
@@ -221,21 +251,49 @@ type ThreeModifierHotkey =
  * - All single keys (letters, numbers, function keys, navigation, editing, punctuation)
  * - Single modifier + common key (Control+S, Mod+A, Mod+/, etc.)
  * - Two modifiers + common key (Mod+Shift+S, Control+Alt+A, etc.)
- * - Three modifiers + common key (Control+Alt+Shift+A, etc.)
+ * - Three modifiers + common key (Control+Alt+Shift+A, Mod+Alt+Shift+S, etc.)
+ * - Four modifiers + common key (Control+Alt+Shift+Meta+A, etc.)
+ *
+ * ## Modifier Names
  *
  * Use canonical modifier names:
- * - `Control` (not Ctrl)
- * - `Alt` (not Option)
- * - `Meta` (not Command/Cmd)
- * - `Mod` for cross-platform (Command on Mac, Control elsewhere)
+ * - `Control` (not Ctrl) - The Control key
+ * - `Alt` (not Option) - The Alt key (Option on macOS)
+ * - `Meta` (not Command/Cmd) - The Meta/Command key (macOS only)
+ * - `Shift` - The Shift key
+ *
+ * ## Platform-Adaptive `Mod` Modifier
+ *
+ * The `Mod` modifier is a special platform-adaptive modifier that automatically resolves
+ * to the "primary modifier" on each platform:
+ *
+ * - **macOS**: `Mod` → `Meta` (Command key ⌘)
+ * - **Windows/Linux**: `Mod` → `Control` (Ctrl key)
+ *
+ * This enables cross-platform hotkey definitions that work correctly on all platforms
+ * without platform-specific code. The `Mod` modifier is resolved at runtime based on
+ * the detected platform.
+ *
+ * **When to use `Mod` vs platform-specific modifiers:**
+ * - Use `Mod` for cross-platform shortcuts (e.g., `Mod+S` for save)
+ * - Use `Meta` or `Control` when you need platform-specific behavior
+ * - Use `Mod` when you want your shortcuts to follow platform conventions automatically
+ *
+ * **Limitations:**
+ * - `Mod+Control` and `Mod+Meta` combinations are not allowed (they create duplicate
+ *   modifiers on one platform)
+ * - In four-modifier combinations, only canonical modifiers are allowed (no `Mod`)
  *
  * @example
  * ```ts
- * const save: Hotkey = 'Mod+S'           // ✓ Cross-platform save
- * const saveAs: Hotkey = 'Mod+Shift+S'   // ✓ Cross-platform save as
- * const macOnly: Hotkey = 'Meta+S'       // ✓ Command+S on Mac only
- * const comment: Hotkey = 'Mod+/'       // ✓ Toggle comment
- * const indent: Hotkey = 'Mod+]'        // ✓ Indent
+ * // Cross-platform shortcuts (recommended)
+ * const save: Hotkey = 'Mod+S'           // Command+S on Mac, Ctrl+S on Windows/Linux
+ * const saveAs: Hotkey = 'Mod+Shift+S'   // Command+Shift+S on Mac, Ctrl+Shift+S elsewhere
+ * const comment: Hotkey = 'Mod+/'       // Command+/ on Mac, Ctrl+/ elsewhere
+ *
+ * // Platform-specific shortcuts
+ * const macOnly: Hotkey = 'Meta+S'       // Command+S on Mac only
+ * const windowsOnly: Hotkey = 'Control+S' // Ctrl+S on Windows/Linux only
  * ```
  */
 export type Hotkey =
@@ -243,6 +301,7 @@ export type Hotkey =
   | SingleModifierHotkey
   | TwoModifierHotkey
   | ThreeModifierHotkey
+  | FourModifierHotkey
 
 /**
  * A parsed representation of a hotkey string.

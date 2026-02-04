@@ -53,13 +53,24 @@ export {
   STANDARD_MODIFIER_LABELS,
   KEY_DISPLAY_SYMBOLS,
   MODIFIER_ORDER,
+  // Key normalization
+  normalizeKeyName,
 } from './constants'
 
 // =============================================================================
 // Parsing
 // =============================================================================
 
-export { parseHotkey, normalizeHotkey, isModifier } from './parse'
+export {
+  parseHotkey,
+  normalizeHotkey,
+  isModifier,
+  parseKeyboardEvent,
+  keyboardEventToHotkey,
+  isModifierKey,
+  hasNonModifierKey,
+  convertToModFormat,
+} from './parse'
 
 // =============================================================================
 // Formatting
@@ -110,3 +121,13 @@ export {
   getSequenceManager,
   createSequenceMatcher,
 } from './sequence'
+
+// =============================================================================
+// Hotkey Recorder
+// =============================================================================
+
+export {
+  HotkeyRecorder,
+  type HotkeyRecorderState,
+  type HotkeyRecorderOptions,
+} from './recorder'

@@ -8,6 +8,7 @@ title: "@tanstack/keys"
 ## Classes
 
 - [HotkeyManager](classes/HotkeyManager.md)
+- [HotkeyRecorder](classes/HotkeyRecorder.md)
 - [KeyStateTracker](classes/KeyStateTracker.md)
 - [SequenceManager](classes/SequenceManager.md)
 
@@ -17,6 +18,8 @@ title: "@tanstack/keys"
 - [FormatDisplayOptions](interfaces/FormatDisplayOptions.md)
 - [HotkeyCallbackContext](interfaces/HotkeyCallbackContext.md)
 - [HotkeyOptions](interfaces/HotkeyOptions.md)
+- [HotkeyRecorderOptions](interfaces/HotkeyRecorderOptions.md)
+- [HotkeyRecorderState](interfaces/HotkeyRecorderState.md)
 - [HotkeyRegistration](interfaces/HotkeyRegistration.md)
 - [HotkeyRegistrationHandle](interfaces/HotkeyRegistrationHandle.md)
 - [KeyStateTrackerState](interfaces/KeyStateTrackerState.md)
@@ -59,6 +62,7 @@ title: "@tanstack/keys"
 
 - [assertValidHotkey](functions/assertValidHotkey.md)
 - [checkHotkey](functions/checkHotkey.md)
+- [convertToModFormat](functions/convertToModFormat.md)
 - [createHotkeyHandler](functions/createHotkeyHandler.md)
 - [createMultiHotkeyHandler](functions/createMultiHotkeyHandler.md)
 - [createSequenceMatcher](functions/createSequenceMatcher.md)
@@ -69,8 +73,13 @@ title: "@tanstack/keys"
 - [getHotkeyManager](functions/getHotkeyManager.md)
 - [getKeyStateTracker](functions/getKeyStateTracker.md)
 - [getSequenceManager](functions/getSequenceManager.md)
+- [hasNonModifierKey](functions/hasNonModifierKey.md)
 - [isModifier](functions/isModifier.md)
+- [isModifierKey](functions/isModifierKey.md)
+- [keyboardEventToHotkey](functions/keyboardEventToHotkey.md)
 - [matchesKeyboardEvent](functions/matchesKeyboardEvent.md)
 - [normalizeHotkey](functions/normalizeHotkey.md)
+- [normalizeKeyName](functions/normalizeKeyName.md)
 - [parseHotkey](functions/parseHotkey.md)
+- [parseKeyboardEvent](functions/parseKeyboardEvent.md)
 - [validateHotkey](functions/validateHotkey.md)

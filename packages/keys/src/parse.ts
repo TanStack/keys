@@ -136,9 +136,7 @@ export function isModifier(key: string): boolean {
  * })
  * ```
  */
-export function parseKeyboardEvent(
-  event: KeyboardEvent,
-): ParsedHotkey {
+export function parseKeyboardEvent(event: KeyboardEvent): ParsedHotkey {
   const normalizedKey = normalizeKeyName(event.key)
 
   // Build modifiers array in canonical order
@@ -178,9 +176,7 @@ export function parseKeyboardEvent(
  * })
  * ```
  */
-export function keyboardEventToHotkey(
-  event: KeyboardEvent,
-): Hotkey {
+export function keyboardEventToHotkey(event: KeyboardEvent): Hotkey {
   const parsed = parseKeyboardEvent(event)
 
   // Build hotkey string in canonical order (same as formatHotkey)
@@ -287,11 +283,15 @@ export function convertToModFormat(
   if (platform === 'mac' && parsed.meta && !parsed.ctrl) {
     // Convert Meta to Mod on Mac
     const parts = hotkey.split('+')
-    return parts.map((part) => (part === 'Meta' ? 'Mod' : part)).join('+') as Hotkey
+    return parts
+      .map((part) => (part === 'Meta' ? 'Mod' : part))
+      .join('+') as Hotkey
   } else if (platform !== 'mac' && parsed.ctrl && !parsed.meta) {
     // Convert Control to Mod on Windows/Linux
     const parts = hotkey.split('+')
-    return parts.map((part) => (part === 'Control' ? 'Mod' : part)).join('+') as Hotkey
+    return parts
+      .map((part) => (part === 'Control' ? 'Mod' : part))
+      .join('+') as Hotkey
   }
 
   // No conversion needed

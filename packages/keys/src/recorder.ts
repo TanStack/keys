@@ -163,7 +163,9 @@ export class HotkeyRecorder {
       // Validate: must have at least one non-modifier key
       if (hasNonModifierKey(finalHotkey, this.#platform)) {
         // Remove listener FIRST to prevent any additional events
-        const handlerToRemove = this.#keydownHandler as ((event: KeyboardEvent) => void) | null
+        const handlerToRemove = this.#keydownHandler as
+          | ((event: KeyboardEvent) => void)
+          | null
         if (handlerToRemove) {
           this.#removeListener(handlerToRemove)
           this.#keydownHandler = null

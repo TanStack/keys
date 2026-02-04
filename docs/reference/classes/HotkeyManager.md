@@ -34,7 +34,7 @@ unregister()
 destroy(): void;
 ```
 
-Defined in: [manager.ts:526](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L526)
+Defined in: [manager.ts:520](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L520)
 
 Destroys the manager and removes all listeners.
 
@@ -50,7 +50,7 @@ Destroys the manager and removes all listeners.
 getRegistrationCount(): number;
 ```
 
-Defined in: [manager.ts:497](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L497)
+Defined in: [manager.ts:491](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L491)
 
 Gets the number of registered hotkeys.
 
@@ -66,7 +66,7 @@ Gets the number of registered hotkeys.
 isRegistered(hotkey, target?): boolean;
 ```
 
-Defined in: [manager.ts:508](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L508)
+Defined in: [manager.ts:502](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L502)
 
 Checks if a specific hotkey is registered.
 
@@ -101,7 +101,7 @@ register(
    options): HotkeyRegistrationHandle;
 ```
 
-Defined in: [manager.ts:122](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L122)
+Defined in: [manager.ts:120](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L120)
 
 Registers a hotkey handler and returns a handle for updating the registration.
 
@@ -157,7 +157,7 @@ handle.unregister()
 static getInstance(): HotkeyManager;
 ```
 
-Defined in: [manager.ts:80](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L80)
+Defined in: [manager.ts:78](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L78)
 
 Gets the singleton instance of HotkeyManager.
 
@@ -173,7 +173,7 @@ Gets the singleton instance of HotkeyManager.
 static resetInstance(): void;
 ```
 
-Defined in: [manager.ts:90](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L90)
+Defined in: [manager.ts:88](https://github.com/TanStack/keys/blob/main/packages/keys/src/manager.ts#L88)
 
 Resets the singleton instance. Useful for testing.
 

@@ -21,11 +21,11 @@ export interface UseHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
    * Defaults to document.
    */
   target?:
-  | React.RefObject<HTMLElement | null>
-  | HTMLElement
-  | Document
-  | Window
-  | null
+    | React.RefObject<HTMLElement | null>
+    | HTMLElement
+    | Document
+    | Window
+    | null
 }
 
 /**

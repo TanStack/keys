@@ -119,7 +119,9 @@ describe('HotkeyManager', () => {
 
       expect(manager.getRegistrationCount()).toBe(1)
       expect(manager.isRegistered('Meta+S')).toBe(true)
-      document.dispatchEvent(createKeyboardEvent('keydown', 's', { metaKey: true }))
+      document.dispatchEvent(
+        createKeyboardEvent('keydown', 's', { metaKey: true }),
+      )
       expect(callback).toHaveBeenCalledTimes(1)
     })
   })

@@ -246,7 +246,11 @@ describe('rawHotkeyToParsedHotkey', () => {
   })
 
   it('should convert RawHotkey with modifiers', () => {
-    const result = rawHotkeyToParsedHotkey({ key: 'S', ctrl: true, shift: true })
+    const result = rawHotkeyToParsedHotkey({
+      key: 'S',
+      ctrl: true,
+      shift: true,
+    })
     expect(result).toEqual({
       key: 'S',
       ctrl: true,

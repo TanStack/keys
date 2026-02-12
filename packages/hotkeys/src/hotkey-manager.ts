@@ -252,9 +252,9 @@ export class HotkeyManager {
       typeof hotkey === 'string'
         ? parseHotkey(hotkey, platform)
         : rawHotkeyToParsedHotkey(hotkey, platform)
-    const hotkeyStr = (typeof hotkey === 'string'
-      ? hotkey
-      : formatHotkey(parsedHotkey)) as Hotkey
+    const hotkeyStr = (
+      typeof hotkey === 'string' ? hotkey : formatHotkey(parsedHotkey)
+    ) as Hotkey
 
     // Resolve target: default to document if not provided or null
     const target =

@@ -1,5 +1,11 @@
 # @tanstack/hotkeys
 
+## 0.0.2
+
+### Patch Changes
+
+- feat: initial release ([`341d167`](https://github.com/TanStack/hotkeys/commit/341d16731f09709a463343852ae4c0e1b6bc6613))
+
 ## 0.0.1
 
 ### Patch Changes

@@ -9,7 +9,7 @@ title: getHotkeyManager
 function getHotkeyManager(): HotkeyManager;
 ```
 
-Defined in: [hotkey-manager.ts:796](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/hotkey-manager.ts#L796)
+Defined in: [hotkey-manager.ts:811](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/hotkey-manager.ts#L811)
 
 Gets the singleton HotkeyManager instance.
 Convenience function for accessing the manager.

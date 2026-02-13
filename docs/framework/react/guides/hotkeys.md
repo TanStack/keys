@@ -49,14 +49,25 @@ useHotkey('Mod+S', callback, {
   stopPropagation: true,
   eventType: 'keydown',
   requireReset: false,
-  ignoreInputs: true,
+  ignoreInputs: undefined, // smart default: false for Mod+S, true for single keys
   target: document,
   platform: undefined, // auto-detected
   conflictBehavior: 'warn',
 })
 ```
 
-**Why these defaults?** Most hotkey registrations aim to override browser behavior (e.g., `Mod+S` for save instead of the browser's "Save Page" dialog). The library defaults `preventDefault` and `stopPropagation` to `true` so your hotkeys take precedence without extra boilerplate. Input-like elements (inputs, textareas, contenteditable) are ignored by default (`ignoreInputs: true`) so shortcuts don't fire while the user is typing. When a hotkey is already registered, a warning is logged (`conflictBehavior: 'warn'`) to help catch duplicate bindings during development.
+### Why These Defaults?
+
+Most hotkey registrations are intended to override default browser behavior—such as using `Mod+S` to save a document instead of showing the browser’s "Save Page" dialog. To make this easy and consistent, the library sets `preventDefault` and `stopPropagation` to `true` by default, ensuring your hotkey handlers take precedence and reducing the amount of repetitive boilerplate code required.
+
+#### Smart Input Handling: `ignoreInputs`
+
+The `ignoreInputs` option is designed to strike a balance between accessibility and usability. By default, hotkeys involving `Ctrl`/`Meta` modifiers (like `Mod+S`) and the `Escape` key are allowed to fire even when the focus is inside input elements (such as text fields or text areas). This allows shortcuts like save or close to work wherever the user is focused. On the other hand, single key shortcuts or those using only `Shift`/`Alt` are ignored within inputs to prevent interference with normal typing.
+
+#### Hotkey Conflicts: `conflictBehavior`
+
+When you attempt to register a hotkey that is already registered (possibly in another part of your app), the library logs a warning by default using the `conflictBehavior: 'warn'` setting. This helps you catch accidental duplicate bindings during development so they can be resolved before reaching production.
+
 
 ### Global Default Options via Provider
 
@@ -131,17 +142,21 @@ useHotkey('Escape', () => closePanel(), { requireReset: true })
 
 ### `ignoreInputs`
 
-When `true` (the default), the hotkey will not fire when the user is focused on an input, textarea, select, or contentEditable element. This prevents hotkeys from interfering with text input.
+When `true`, the hotkey will not fire when the user is focused on an input, textarea, select, or contentEditable element. When unset, a smart default applies: `Ctrl`/`Meta` shortcuts and `Escape` fire in inputs; single keys and `Shift`/`Alt` combos are ignored.
 
 ```tsx
-// This will NOT fire when typing in an input
+// Single key - ignored in inputs by default (smart default)
 useHotkey('K', () => openSearch())
 
-// This WILL fire even when typing in an input
-useHotkey('Escape', () => closeDialog(), { ignoreInputs: false })
+// Mod+S and Escape - fire in inputs by default (smart default)
+useHotkey('Mod+S', () => save())
+useHotkey('Escape', () => closeDialog())
+
+// Override: force a single key to fire in inputs
+useHotkey('Enter', () => submit(), { ignoreInputs: false })
 ```
 
-Set `ignoreInputs: false` for hotkeys that should always work, like Escape to close a modal.
+Set `ignoreInputs: false` or `true` explicitly to override the smart default.
 
 ### `target`
 

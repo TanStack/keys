@@ -31,7 +31,7 @@ export interface HotkeyOptions {
   enabled?: boolean
   /** The event type to listen for. Defaults to 'keydown' */
   eventType?: 'keydown' | 'keyup'
-  /** Whether to ignore hotkeys when keyboard events originate from input-like elements (input, textarea, select, contenteditable). Defaults to true */
+  /** Whether to ignore hotkeys when keyboard events originate from input-like elements (input, textarea, select, contenteditable). Defaults based on hotkey: true for single keys and Shift/Alt combos; false for Ctrl/Meta shortcuts and Escape */
   ignoreInputs?: boolean
   /** The target platform for resolving 'Mod' */
   platform?: 'mac' | 'windows' | 'linux'
@@ -132,6 +132,16 @@ let registrationIdCounter = 0
  */
 function generateId(): string {
   return `hotkey_${++registrationIdCounter}`
+}
+
+/**
+ * Computes the default ignoreInputs value based on the hotkey.
+ * Ctrl/Meta shortcuts and Escape fire in inputs; single keys and Shift/Alt combos are ignored.
+ */
+function getDefaultIgnoreInputs(parsedHotkey: ParsedHotkey): boolean {
+  if (parsedHotkey.ctrl || parsedHotkey.meta) return false // Mod+S, Ctrl+C, etc.
+  if (parsedHotkey.key === 'Escape') return false // Close modal, etc.
+  return true // Single keys, Shift+key, Alt+key
 }
 
 /**
@@ -271,16 +281,21 @@ export class HotkeyManager {
       this.#handleConflict(conflictingRegistration, hotkeyStr, conflictBehavior)
     }
 
+    const resolvedIgnoreInputs =
+      options.ignoreInputs ?? getDefaultIgnoreInputs(parsedHotkey)
+
+    const baseOptions = {
+      ...defaultHotkeyOptions,
+      ...options,
+      platform,
+    }
+
     const registration: HotkeyRegistration = {
       id,
       hotkey: hotkeyStr,
       parsedHotkey,
       callback,
-      options: {
-        ...defaultHotkeyOptions,
-        ...options,
-        platform,
-      },
+      options: { ...baseOptions, ignoreInputs: resolvedIgnoreInputs },
       hasFired: false,
       triggerCount: 0,
       target,

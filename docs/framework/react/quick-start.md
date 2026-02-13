@@ -166,7 +166,7 @@ function Root() {
   return (
     <HotkeysProvider
       defaultOptions={{
-        hotkey: { preventDefault: true, ignoreInputs: true },
+        hotkey: { preventDefault: true },
         hotkeySequence: { timeout: 1500 },
         hotkeyRecorder: { onCancel: () => console.log('Recording cancelled') },
       }}

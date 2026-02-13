@@ -597,32 +597,27 @@ describe('HotkeyManager', () => {
       return event
     }
 
-    it('should ignore hotkeys when typing in input elements by default', () => {
+    it('should ignore single-key hotkeys when typing in input elements by default', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, { platform: 'mac' })
+      manager.register('K', callback, { platform: 'mac' })
 
       const input = document.createElement('input')
       document.body.appendChild(input)
 
-      dispatchKeyboardEventFromElement(document, input, 'keydown', 's', {
-        metaKey: true,
-      })
+      dispatchKeyboardEventFromElement(document, input, 'keydown', 'k', {})
 
       expect(callback).not.toHaveBeenCalled()
 
       document.body.removeChild(input)
     })
 
-    it('should fire hotkeys when ignoreInputs is false', () => {
+    it('should fire Mod+S in inputs by default (smart default)', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, {
-        platform: 'mac',
-        ignoreInputs: false,
-      })
+      manager.register('Mod+S', callback, { platform: 'mac' })
 
       const input = document.createElement('input')
       document.body.appendChild(input)
@@ -645,55 +640,49 @@ describe('HotkeyManager', () => {
       document.body.removeChild(input)
     })
 
-    it('should ignore hotkeys when typing in textarea elements', () => {
+    it('should ignore single-key hotkeys when typing in textarea elements', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, { platform: 'mac' })
+      manager.register('K', callback, { platform: 'mac' })
 
       const textarea = document.createElement('textarea')
       document.body.appendChild(textarea)
 
-      dispatchKeyboardEventFromElement(document, textarea, 'keydown', 's', {
-        metaKey: true,
-      })
+      dispatchKeyboardEventFromElement(document, textarea, 'keydown', 'k', {})
 
       expect(callback).not.toHaveBeenCalled()
 
       document.body.removeChild(textarea)
     })
 
-    it('should ignore hotkeys when typing in select elements', () => {
+    it('should ignore single-key hotkeys when typing in select elements', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, { platform: 'mac' })
+      manager.register('K', callback, { platform: 'mac' })
 
       const select = document.createElement('select')
       document.body.appendChild(select)
 
-      dispatchKeyboardEventFromElement(document, select, 'keydown', 's', {
-        metaKey: true,
-      })
+      dispatchKeyboardEventFromElement(document, select, 'keydown', 'k', {})
 
       expect(callback).not.toHaveBeenCalled()
 
       document.body.removeChild(select)
     })
 
-    it('should ignore hotkeys when typing in contenteditable elements', () => {
+    it('should ignore single-key hotkeys when typing in contenteditable elements', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, { platform: 'mac' })
+      manager.register('K', callback, { platform: 'mac' })
 
       const div = document.createElement('div')
       div.contentEditable = 'true'
       document.body.appendChild(div)
 
-      dispatchKeyboardEventFromElement(document, div, 'keydown', 's', {
-        metaKey: true,
-      })
+      dispatchKeyboardEventFromElement(document, div, 'keydown', 'k', {})
 
       expect(callback).not.toHaveBeenCalled()
 
@@ -760,7 +749,7 @@ describe('HotkeyManager', () => {
       document.body.removeChild(textarea)
     })
 
-    it('should ignore hotkeys when scoped to parent element containing input', () => {
+    it('should ignore single-key hotkeys when scoped to parent element containing input', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
@@ -769,37 +758,33 @@ describe('HotkeyManager', () => {
       parent.appendChild(input)
       document.body.appendChild(parent)
 
-      manager.register('Mod+S', callback, {
+      manager.register('K', callback, {
         platform: 'mac',
         target: parent,
       })
 
       // Event originates from input but bubbles to parent
-      dispatchKeyboardEventFromElement(parent, input, 'keydown', 's', {
-        metaKey: true,
-      })
+      dispatchKeyboardEventFromElement(parent, input, 'keydown', 'k', {})
 
       expect(callback).not.toHaveBeenCalled()
 
       document.body.removeChild(parent)
     })
 
-    it('should ignore hotkeys when scoped to document and typing in input', () => {
+    it('should ignore single-key hotkeys when scoped to document and typing in input', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
       const input = document.createElement('input')
       document.body.appendChild(input)
 
-      manager.register('Mod+S', callback, {
+      manager.register('K', callback, {
         platform: 'mac',
         target: document,
       })
 
       // Event originates from input but bubbles to document
-      dispatchKeyboardEventFromElement(document, input, 'keydown', 's', {
-        metaKey: true,
-      })
+      dispatchKeyboardEventFromElement(document, input, 'keydown', 'k', {})
 
       expect(callback).not.toHaveBeenCalled()
 
@@ -833,7 +818,7 @@ describe('HotkeyManager', () => {
       document.body.removeChild(div)
     })
 
-    it('should handle multiple hotkeys with different ignoreInputs settings', () => {
+    it('should handle multiple hotkeys with smart default (Mod+S fires, K ignored)', () => {
       const manager = HotkeyManager.getInstance()
       const callback1 = vi.fn()
       const callback2 = vi.fn()
@@ -841,43 +826,32 @@ describe('HotkeyManager', () => {
       const input = document.createElement('input')
       document.body.appendChild(input)
 
-      // This one should be ignored (default ignoreInputs: true)
       manager.register('Mod+S', callback1, { platform: 'mac' })
+      manager.register('K', callback2, { platform: 'mac' })
 
-      // This one should fire (ignoreInputs: false)
-      manager.register('Mod+Z', callback2, {
-        platform: 'mac',
-        ignoreInputs: false,
-      })
-
-      dispatchKeyboardEventFromElement(document, input, 'keydown', 's', {
-        metaKey: true,
-      })
-
-      const eventZ = dispatchKeyboardEventFromElement(
+      const eventS = dispatchKeyboardEventFromElement(
         document,
         input,
         'keydown',
-        'z',
+        's',
         { metaKey: true },
       )
+      dispatchKeyboardEventFromElement(document, input, 'keydown', 'k', {})
 
-      expect(callback1).not.toHaveBeenCalled()
-      expect(callback2).toHaveBeenCalledWith(
-        eventZ,
-        expect.objectContaining({
-          hotkey: 'Mod+Z',
-        }),
+      expect(callback1).toHaveBeenCalledWith(
+        eventS,
+        expect.objectContaining({ hotkey: 'Mod+S' }),
       )
+      expect(callback2).not.toHaveBeenCalled()
 
       document.body.removeChild(input)
     })
 
-    it('should work with different input types (text, number, email)', () => {
+    it('should ignore single-key hotkeys with different input types (text, number, email)', () => {
       const manager = HotkeyManager.getInstance()
       const callback = vi.fn()
 
-      manager.register('Mod+S', callback, { platform: 'mac' })
+      manager.register('K', callback, { platform: 'mac' })
 
       const inputTypes = ['text', 'number', 'email', 'password', 'search']
       for (const type of inputTypes) {
@@ -885,15 +859,109 @@ describe('HotkeyManager', () => {
         input.type = type
         document.body.appendChild(input)
 
-        dispatchKeyboardEventFromElement(document, input, 'keydown', 's', {
-          metaKey: true,
-        })
+        dispatchKeyboardEventFromElement(document, input, 'keydown', 'k', {})
 
         expect(callback).not.toHaveBeenCalled()
 
         document.body.removeChild(input)
         callback.mockClear()
       }
+    })
+
+    it('should fire Escape in inputs by default (smart default)', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Escape', callback, { platform: 'mac' })
+
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+
+      const event = dispatchKeyboardEventFromElement(
+        document,
+        input,
+        'keydown',
+        'Escape',
+        {},
+      )
+
+      expect(callback).toHaveBeenCalledWith(
+        event,
+        expect.objectContaining({
+          hotkey: 'Escape',
+        }),
+      )
+
+      document.body.removeChild(input)
+    })
+
+    it('should ignore Shift+S in inputs by default', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Shift+S', callback, { platform: 'mac' })
+
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+
+      dispatchKeyboardEventFromElement(document, input, 'keydown', 'S', {
+        shiftKey: true,
+      })
+
+      expect(callback).not.toHaveBeenCalled()
+
+      document.body.removeChild(input)
+    })
+
+    it('should respect explicit ignoreInputs: true on Mod+S', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, {
+        platform: 'mac',
+        ignoreInputs: true,
+      })
+
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+
+      dispatchKeyboardEventFromElement(document, input, 'keydown', 's', {
+        metaKey: true,
+      })
+
+      expect(callback).not.toHaveBeenCalled()
+
+      document.body.removeChild(input)
+    })
+
+    it('should respect explicit ignoreInputs: false on single key K', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('K', callback, {
+        platform: 'mac',
+        ignoreInputs: false,
+      })
+
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+
+      const event = dispatchKeyboardEventFromElement(
+        document,
+        input,
+        'keydown',
+        'k',
+        {},
+      )
+
+      expect(callback).toHaveBeenCalledWith(
+        event,
+        expect.objectContaining({
+          hotkey: 'K',
+        }),
+      )
+
+      document.body.removeChild(input)
     })
   })
 

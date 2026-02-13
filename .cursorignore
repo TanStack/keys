@@ -1,0 +1,2 @@
+# Ignore reference folders in docs (generated API reference)
+docs/**/reference/

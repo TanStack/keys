@@ -1,5 +1,11 @@
 # @tanstack/hotkeys
 
+## 0.1.0
+
+### Minor Changes
+
+- feat: smarter ignoreInputs default ([#10](https://github.com/TanStack/hotkeys/pull/10))
+
 ## 0.0.2
 
 ### Patch Changes

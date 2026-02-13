@@ -264,6 +264,13 @@ function App() {
   // ============================================================================
 
   // Scoped to sidebar - only works when sidebar is focused or contains focus
+  // Auto-focus modal when opened so scoped shortcuts work immediately
+  React.useEffect(() => {
+    if (modalOpen) {
+      modalRef.current?.focus()
+    }
+  }, [modalOpen])
+
   useHotkey(
     'Mod+B',
     () => {

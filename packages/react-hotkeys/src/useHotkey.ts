@@ -173,7 +173,7 @@ export function useHotkey(
         registrationRef.current = null
       }
     }
-  }, [hotkeyString])
+  }, [hotkeyString, options.enabled])
 
   // Sync callback and options on EVERY render (outside useEffect)
   // This avoids stale closures - the callback always has access to latest state

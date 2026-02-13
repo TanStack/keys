@@ -31,7 +31,7 @@ export interface HotkeyOptions {
   enabled?: boolean
   /** The event type to listen for. Defaults to 'keydown' */
   eventType?: 'keydown' | 'keyup'
-  /** Whether to ignore hotkeys when keyboard events originate from input-like elements (input, textarea, select, contenteditable). Defaults based on hotkey: true for single keys and Shift/Alt combos; false for Ctrl/Meta shortcuts and Escape */
+  /** Whether to ignore hotkeys when keyboard events originate from input-like elements (text inputs, textarea, select, contenteditable — button-type inputs like type=button/submit/reset are not ignored). Defaults based on hotkey: true for single keys and Shift/Alt combos; false for Ctrl/Meta shortcuts and Escape */
   ignoreInputs?: boolean
   /** The target platform for resolving 'Mod' */
   platform?: 'mac' | 'windows' | 'linux'
@@ -651,19 +651,28 @@ export class HotkeyManager {
    * Checks if an element is an input-like element that should be ignored.
    *
    * This includes:
-   * - HTMLInputElement (all input types)
+   * - HTMLInputElement (all input types except button, submit, reset)
    * - HTMLTextAreaElement
    * - HTMLSelectElement
    * - Elements with contentEditable enabled
+   *
+   * Button-type inputs (button, submit, reset) are excluded so hotkeys like
+   * Mod+S and Escape fire when the user has tabbed to a form button.
    */
   #isInputElement(element: EventTarget | null): boolean {
     if (!element) {
       return false
     }
 
-    // Check for standard input elements
+    if (element instanceof HTMLInputElement) {
+      const type = element.type.toLowerCase()
+      if (type === 'button' || type === 'submit' || type === 'reset') {
+        return false
+      }
+      return true
+    }
+
     if (
-      element instanceof HTMLInputElement ||
       element instanceof HTMLTextAreaElement ||
       element instanceof HTMLSelectElement
     ) {

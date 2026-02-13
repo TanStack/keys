@@ -17,7 +17,7 @@ Surprisingly, in our experience, even AI often struggles to get hotkey managemen
 ## Features
 
 - **Desired Defaults**
-  - TanStack Hotkeys automatically uses `preventDefault`, `stopPropagation`, and ignores hotkeys when input elements are focused by default.
+  - TanStack Hotkeys automatically uses `preventDefault`, `stopPropagation`, and intelligently ignores hotkeys when input elements are focused by default.
 
 - **Type-Safe Hotkey Strings**
   - Full autocomplete for valid modifier - e.g. `Control+A`, `Alt+S`, `Shift+D`, `Mod+Shift+G`, etc.

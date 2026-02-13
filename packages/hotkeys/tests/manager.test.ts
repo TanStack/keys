@@ -963,6 +963,36 @@ describe('HotkeyManager', () => {
 
       document.body.removeChild(input)
     })
+
+    it('should fire hotkeys when focused on button-type inputs (button, submit, reset)', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, { platform: 'mac' })
+
+      const buttonTypes = ['button', 'submit', 'reset']
+      for (const type of buttonTypes) {
+        const input = document.createElement('input')
+        input.type = type
+        document.body.appendChild(input)
+
+        const event = dispatchKeyboardEventFromElement(
+          document,
+          input,
+          'keydown',
+          's',
+          { metaKey: true },
+        )
+
+        expect(callback).toHaveBeenCalledWith(
+          event,
+          expect.objectContaining({ hotkey: 'Mod+S' }),
+        )
+
+        document.body.removeChild(input)
+        callback.mockClear()
+      }
+    })
   })
 
   describe('conflict detection', () => {

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./media/header_keys.png" >
+  <img src="./media/header_hotkeys.png" alt="TanStack Hotkeys" />
 </div>
 
 <br />
@@ -36,54 +36,15 @@
 
 # TanStack Hotkeys
 
-Type-safe keyboard shortcuts for the web. Template strings, parsed objects, cross-platform `Mod`, a singleton Hotkey Manager, and utilities for cheatsheet UIs. Built to stay SSR-friendly.
-
 > [!NOTE]
 > TanStack Hotkeys is pre-alpha (prototyping phase). We are actively developing the library and are open to feedback and contributions.
 
-## Features
+Type-safe keyboard shortcuts for the web. Template-string bindings, parsed objects, a cross-platform `Mod` key, a singleton Hotkey Manager, and utilities for cheatsheet UIs—built to stay SSR-friendly.
 
-- **Key Bindings**
-  - Template strings as the primary syntax: `Mod+Shift+S`, `Control+Shift+A`, `Escape`
-  - Parsed objects also supported: `{ key: 'S', ctrl: true, shift: true, alt: false, meta: false, modifiers: ['Control','Shift'] }`
-  - Type-safe `Hotkey` for as many valid `event.key` combinations as possible
-- **Options**
-  - `keydown` / `keyup` via `eventType`
-  - `preventDefault`, `stopPropagation`
-  - Conditional `enabled` to turn hotkeys on or off
-  - `requireReset`: trigger once until all keys are released
-- **Cross-Platform Mod**
-  - `Mod` maps to **Cmd (Meta)** on macOS and **Ctrl** on Windows/Linux
-- **Singleton Hotkey Manager**
-  - `getHotkeyManager()`, `HotkeyManager.getInstance()` to register global keyboard shortcuts
-  - Single shared listener for efficiency
-- **Display Utilities**
-  - `formatForDisplay(hotkey)` for cheatsheet UIs (symbols on Mac, labels on Windows/Linux)
-  - `formatWithLabels`, `formatHotkey` for flexible output
-- **Validation & Matching**
-  - `validateHotkey`, `assertValidHotkey`, `checkHotkey` for correctness validation
-  - `matchesKeyboardEvent`, `createHotkeyHandler`, `createMultiHotkeyHandler`
-- **Sequences**
-  - `SequenceManager`, `createSequenceMatcher` for Vim-style multi-key shortcuts (e.g. `['G','G']`, `['D','I','W']`)
-- **Key State**
-  - `KeyStateTracker`, `getKeyStateTracker` for held-key tracking
-- **Hotkey Recorder**
-  - `HotkeyRecorder` class for capturing keyboard shortcuts interactively
-  - Supports live preview, cancellation, and clearing during recording
-- **React Hooks**
-  - `useHotkey` – register a keyboard shortcut (global, via singleton manager)
-  - `useHotkeySequence` – detect keys pressed in order within a timeout
-  - `useHeldKeys` – reactive list of currently held keys
-  - `useKeyHold` – reactive boolean for whether a given key is held
-  - `useHotkeyRecorder` – record keyboard shortcuts interactively with live preview
-- **Devtools**
-  - Devtools are a core focus: visibility into all registered hotkeys, scopes, and options
-  - `@tanstack/hotkeys-devtools` and `@tanstack/react-hotkeys-devtools` (in active development)
-- **Planned**
-  - Scoping hotkeys to a DOM element or React ref
-  - Warn/error on conflicting shortcuts (TBD)
-  - Ignore hotkeys when certain inputs are focused (e.g. `input`, `textarea`)
-  - Focus traps and tab-order utilities
+- Type-safe bindings — template strings (`Mod+Shift+S`, `Escape`) or parsed objects for full control
+- Flexible options — `keydown`/`keyup`, `preventDefault`, `stopPropagation`, conditional enabled, `requireReset`
+- Cross-platform Mod — maps to Cmd on macOS and Ctrl on Windows/Linux
+- Batteries included — validation + matching, sequences (Vim-style), key-state tracking, recorder UI helpers, React hooks, and devtools (in progress)
 
 ### <a href="https://tanstack.com/hotkeys">Read the docs →</a>
 
@@ -98,37 +59,6 @@ Type-safe keyboard shortcuts for the web. Template strings, parsed objects, cros
 > - Svelte Hotkeys – needs a contributor!
 > - Vue Hotkeys – needs a contributor!
 
-## Quick Example
-
-```tsx
-import { useHotkey, formatForDisplay } from '@tanstack/react-hotkeys'
-
-function Editor() {
-  useHotkey(
-    'Mod+S',
-    (e, { hotkey }) => {
-      save()
-    },
-    { requireReset: true },
-  )
-
-  return (
-    <div>
-      <button>Save</button>
-      <span>{formatForDisplay('Mod+S')}</span>{' '}
-      {/* e.g. "⌘S" on Mac, "Ctrl+S" on Windows */}
-    </div>
-  )
-}
-```
-
-## Packages
-
-- **`@tanstack/hotkeys`** – Core: parse, format, match, validate, manager, sequence, key-state
-- **`@tanstack/react-hotkeys`** – React: `useHotkey`, `useHotkeySequence`, `useHeldKeys`, `useKeyHold`, `useHotkeyRecorder`
-- **`@tanstack/hotkeys-devtools`** – Base devtools (in development)
-- **`@tanstack/react-hotkeys-devtools`** – React devtools (in development)
-
 ## Get Involved
 
 - We welcome issues and pull requests!
@@ -138,13 +68,15 @@ function Editor() {
 
 ## Partners
 
+<div align="center">
+
 <table align="center">
   <tr>
     <td>
       <a href="https://www.coderabbit.ai/?via=tanstack&dub_id=aCcEEdAOqqutX6OS" >
         <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://tanstack.com/assets/coderabbit-dark-CMcuvjEy.svg" height="40" />
-          <source media="(prefers-color-scheme: light)" srcset="https://tanstack.com/assets/coderabbit-light-DVMJ2jHi.svg" height="40" />
+          <source media="(prefers-color-scheme: dark)" srcset="https://tanstack.com/assets/coderabbit-dark-D643Zkrv.svg" height="40" />
+          <source media="(prefers-color-scheme: light)" srcset="https://tanstack.com/assets/coderabbit-light-CIzGLYU_.svg" height="40" />
           <img src="https://tanstack.com/assets/coderabbit-light-DVMJ2jHi.svg" height="40" alt="CodeRabbit" />
         </picture>
       </a>
@@ -152,8 +84,8 @@ function Editor() {
     <td>
       <a href="https://www.cloudflare.com?utm_source=tanstack">
         <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://tanstack.com/assets/cloudflare-white-DQDB7UaL.svg" height="60" />
-          <source media="(prefers-color-scheme: light)" srcset="https://tanstack.com/assets/cloudflare-black-CPufaW0B.svg" height="60" />
+          <source media="(prefers-color-scheme: dark)" srcset="https://tanstack.com/assets/cloudflare-white-Co-Tyjbl.svg" height="60" />
+          <source media="(prefers-color-scheme: light)" srcset="https://tanstack.com/assets/cloudflare-black-6Ojsn8yh.svg" height="60" />
           <img src="https://tanstack.com/assets/cloudflare-black-CPufaW0B.svg" height="60" alt="Cloudflare" />
         </picture>
       </a>
@@ -162,7 +94,7 @@ function Editor() {
 </table>
 
 <div align="center">
-<img src="https://tanstack.com/assets/partner_logo.svg" alt="Keys & you?" height="65">
+<img src="media/partner_logo.svg" alt="Keys & you?" height="65">
 <p>
 We're looking for TanStack Hotkeys Partners to join our mission! Partner with us to push the boundaries of TanStack Hotkeys and build amazing things together.
 </p>

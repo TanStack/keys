@@ -1,5 +1,11 @@
 # @tanstack/react-hotkeys
 
+## 0.0.3
+
+### Patch Changes
+
+- fix: rerun register when options.enabled is changed ([`3ada864`](https://github.com/TanStack/hotkeys/commit/3ada864e07d6a6fe46dd95162592b29e681f52d1))
+
 ## 0.0.2
 
 ### Patch Changes

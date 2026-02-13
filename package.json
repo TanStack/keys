@@ -5,7 +5,7 @@
     "type": "git",
     "url": "git+https://github.com/TanStack/hotkeys.git"
   },
-  "packageManager": "pnpm@10.29.2",
+  "packageManager": "pnpm@10.29.3",
   "type": "module",
   "scripts": {
     "build": "nx affected --skip-nx-cache --targets=build --exclude=examples/** && size-limit",
@@ -57,10 +57,10 @@
     "@tanstack/eslint-config": "0.3.4",
     "@tanstack/typedoc-config": "0.3.3",
     "@testing-library/jest-dom": "^6.9.1",
-    "@types/node": "^25.2.2",
+    "@types/node": "^25.2.3",
     "eslint": "^9.32.2",
     "eslint-plugin-unused-imports": "^4.4.1",
-    "happy-dom": "^20.6.0",
+    "happy-dom": "^20.6.1",
     "knip": "^5.83.1",
     "markdown-link-extractor": "^4.0.3",
     "nx": "^22.5.0",

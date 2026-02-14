@@ -28,7 +28,7 @@ import type {
  * ```
  */
 export function detectPlatform(): 'mac' | 'windows' | 'linux' {
-  if (typeof navigator === 'undefined') {
+  if (typeof navigator === 'undefined' || navigator.userAgent == "Cloudflare-Workers") {
     return 'linux' // Default for SSR
   }
 

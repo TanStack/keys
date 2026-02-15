@@ -1,12 +1,14 @@
 import { createMemo } from 'solid-js'
-import { createHeldKeys } from './createHeldKeys'
+import { useStore } from '@tanstack/solid-store'
+import { getKeyStateTracker } from '@tanstack/hotkeys'
 import type { HeldKey } from '@tanstack/hotkeys'
 
 /**
  * SolidJS primitive that returns whether a specific key is currently being held.
  *
- * This primitive subscribes to the global KeyStateTracker and returns a
- * signal accessor that evaluates to true when the specified key is held.
+ * This primitive uses `useStore` from `@tanstack/solid-store` to subscribe
+ * to the global KeyStateTracker and uses a selector to determine if the
+ * specified key is held.
  *
  * @param key - The key to check (e.g., 'Shift', 'Control', 'A') - can be an accessor function
  * @returns Signal accessor that returns true if the key is currently held down
@@ -42,11 +44,14 @@ import type { HeldKey } from '@tanstack/hotkeys'
  * ```
  */
 export function createKeyHold(key: HeldKey | (() => HeldKey)): () => boolean {
-  const heldKeys = createHeldKeys()
+  const tracker = getKeyStateTracker()
+  const heldKeysSelector = useStore(tracker.store, (state) => state.heldKeys)
 
   return createMemo(() => {
     const resolvedKey = typeof key === 'function' ? key() : key
     const normalizedKey = resolvedKey.toLowerCase()
-    return heldKeys().some((heldKey) => heldKey.toLowerCase() === normalizedKey)
+    return heldKeysSelector().some(
+      (heldKey) => heldKey.toLowerCase() === normalizedKey,
+    )
   })
 }

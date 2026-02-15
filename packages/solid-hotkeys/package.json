@@ -52,7 +52,8 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/hotkeys": "workspace:*"
+    "@tanstack/hotkeys": "workspace:*",
+    "@tanstack/solid-store": "^0.8.0"
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",

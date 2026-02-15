@@ -1,4 +1,5 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js'
+import { createEffect, onCleanup } from 'solid-js'
+import { useStore } from '@tanstack/solid-store'
 import { HotkeyRecorder } from '@tanstack/hotkeys'
 import { useDefaultHotkeysOptions } from './HotkeysProvider'
 import type { Hotkey, HotkeyRecorderOptions } from '@tanstack/hotkeys'
@@ -23,6 +24,9 @@ export interface SolidHotkeyRecorder {
  * class, managing all the complexity of capturing keyboard events, converting them
  * to hotkey strings, and handling edge cases like Escape to cancel or Backspace/Delete
  * to clear.
+ *
+ * This primitive uses `useStore` from `@tanstack/solid-store` to subscribe
+ * to the recorder's store state (same pattern as useHotkeyRecorder in React).
  *
  * @param options - Configuration options for the recorder (or accessor function)
  * @returns An object with recording state signals and control functions
@@ -59,49 +63,41 @@ export function createHotkeyRecorder(
 ): SolidHotkeyRecorder {
   const defaultOptions = useDefaultHotkeysOptions()
 
-  let recorder: HotkeyRecorder | null = null
-  let storeUnsubscribe: (() => void) | null = null
-  const [isRecording, setIsRecording] = createSignal(false)
-  const [recordedHotkey, setRecordedHotkey] = createSignal<Hotkey | null>(null)
+  const resolvedOptions = typeof options === 'function' ? options() : options
+  const mergedOptions = {
+    ...defaultOptions.hotkeyRecorder,
+    ...resolvedOptions,
+  } as HotkeyRecorderOptions
 
-  // Destroy recorder only when component unmounts (not when effect re-runs)
-  onCleanup(() => {
-    storeUnsubscribe?.()
-    recorder?.destroy()
-    recorder = null
-    storeUnsubscribe = null
+  // Create recorder once synchronously (matches React's useRef pattern)
+  const recorder = new HotkeyRecorder(mergedOptions)
+
+  // Subscribe to recorder state using useStore (same pattern as useHotkeyRecorder)
+  const isRecording = useStore(recorder.store, (state) => state.isRecording)
+  const recordedHotkey = useStore(
+    recorder.store,
+    (state) => state.recordedHotkey,
+  )
+
+  // Sync options on every effect run (matches React's sync on render)
+  createEffect(() => {
+    const resolved = typeof options === 'function' ? options() : options
+    recorder.setOptions({
+      ...defaultOptions.hotkeyRecorder,
+      ...resolved,
+    } as HotkeyRecorderOptions)
   })
 
-  createEffect(() => {
-    const resolvedOptions = typeof options === 'function' ? options() : options
-
-    const mergedOptions = {
-      ...defaultOptions.hotkeyRecorder,
-      ...resolvedOptions,
-    } as HotkeyRecorderOptions
-
-    // Create recorder once on first run (matches React's useRef pattern)
-    if (!recorder) {
-      recorder = new HotkeyRecorder(mergedOptions)
-
-      storeUnsubscribe = recorder.store.subscribe(() => {
-        setIsRecording(recorder!.store.state.isRecording)
-        setRecordedHotkey(recorder!.store.state.recordedHotkey)
-      })
-
-      setIsRecording(recorder.store.state.isRecording)
-      setRecordedHotkey(recorder.store.state.recordedHotkey)
-    }
-
-    // Sync options on every effect run (matches React's sync on render)
-    recorder.setOptions(mergedOptions)
+  // Cleanup on unmount
+  onCleanup(() => {
+    recorder.destroy()
   })
 
   return {
     isRecording,
     recordedHotkey,
-    startRecording: () => recorder?.start(),
-    stopRecording: () => recorder?.stop(),
-    cancelRecording: () => recorder?.cancel(),
+    startRecording: () => recorder.start(),
+    stopRecording: () => recorder.stop(),
+    cancelRecording: () => recorder.cancel(),
   }
 }

@@ -26,7 +26,7 @@
     "lint:fix:all": "nx run-many --targets=lint:fix",
     "test": "pnpm run test:ci",
     "test:ci": "nx run-many --targets=test:eslint,test:sherif,test:knip,test:docs,test:lib,test:types,build",
-    "test:docs": "node scripts/verify-links.ts",
+    "test:docs": "tsx scripts/verify-links.ts",
     "test:eslint": "nx affected --target=test:eslint --exclude=examples/**",
     "test:knip": "knip",
     "test:lib": "nx affected --targets=test:lib --exclude=examples/**",
@@ -72,6 +72,7 @@
     "size-limit": "^12.0.0",
     "tinyglobby": "^0.2.15",
     "tsdown": "^0.20.3",
+    "tsx": "^4.19.0",
     "typescript": "5.9.3",
     "vitest": "^4.0.18"
   },

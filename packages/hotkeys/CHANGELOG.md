@@ -1,5 +1,11 @@
 # @tanstack/hotkeys
 
+## 0.1.2
+
+### Patch Changes
+
+- Fix SSR fallback issue in HotkeyManager.register() - return a no-op handle instead of creating a fake Document object when running in SSR environments ([#15](https://github.com/TanStack/hotkeys/pull/15))
+
 ## 0.1.1
 
 ### Patch Changes

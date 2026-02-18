@@ -146,8 +146,7 @@ export class SequenceManager {
     )
 
     const resolvedIgnoreInputs =
-      options.ignoreInputs ??
-      getDefaultIgnoreInputsForSequence(parsedSequence)
+      options.ignoreInputs ?? getDefaultIgnoreInputsForSequence(parsedSequence)
 
     const registration: SequenceRegistration = {
       id,

@@ -13,7 +13,8 @@ By default, TanStack Hotkeys **ignores** keyboard events that originate from com
 
 **Fix options:**
 
-- Bind the hotkey to a more specific target (for example a focused panel) instead of `document`.
+- If you bind the hotkey to a specific element (instead of `document`), make sure that element can actually receive key events (it typically needs to be focusable and focused).
+- If you want hotkeys to work globally, bind to `document` and rely on the default input filtering.
 - Use a dedicated UI (like a command palette) that intentionally captures key events.
 
 ## My hotkey fires even when focus is inside an input
@@ -22,8 +23,8 @@ If a hotkey is firing while the user is typing, it usually means the event is be
 
 **Fix:**
 
-- Make sure you’re using the default input filtering behavior.
-- Prefer scoping hotkeys to a container (panel/dialog) that must be focused.
+- Check whether input filtering has been disabled, or whether you’re attaching listeners to a target that’s too broad (like `document`).
+- If you intentionally scope hotkeys to a container (panel/dialog), ensure that container is focusable and focused when you expect hotkeys to work.
 
 ## The same hotkey fires twice
 

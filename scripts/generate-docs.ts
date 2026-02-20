@@ -59,7 +59,7 @@ await generateReferenceDocs({
       ),
       outputDir: resolve(__dirname, '../docs/framework/angular/reference'),
       exclude: ['packages/hotkeys/**/*'],
-    }
+    },
   ],
 })
 

@@ -168,6 +168,15 @@
               "to": "framework/solid/reference/index"
             }
           ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "Angular Inject APIs",
+              "to": "framework/angular/reference/index"
+            }
+          ]
         }
       ]
     },
@@ -248,6 +257,27 @@
               "to": "framework/solid/reference/interfaces/CreateHotkeyOptions"
             }
           ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "injectHotkey",
+              "to": "framework/angular/reference/functions/injectHotkey"
+            },
+            {
+              "label": "InjectHotkeyOptions",
+              "to": "framework/angular/reference/interfaces/InjectHotkeyOptions"
+            },
+            {
+              "label": "provideHotkeys",
+              "to": "framework/angular/reference/functions/provideHotkeys"
+            },
+            {
+              "label": "HotkeysProviderOptions",
+              "to": "framework/angular/reference/interfaces/HotkeysProviderOptions"
+            }
+          ]
         }
       ]
     },
@@ -316,6 +346,19 @@
               "to": "framework/solid/reference/interfaces/CreateHotkeySequenceOptions"
             }
           ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "injectHotkeySequence",
+              "to": "framework/angular/reference/functions/injectHotkeySequence"
+            },
+            {
+              "label": "InjectHotkeySequenceOptions",
+              "to": "framework/angular/reference/interfaces/InjectHotkeySequenceOptions"
+            }
+          ]
         }
       ]
     },
@@ -366,6 +409,15 @@
             {
               "label": "createKeyHold",
               "to": "framework/solid/reference/functions/createKeyHold"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "injectKeyHold",
+              "to": "framework/angular/reference/functions/injectKeyHold"
             }
           ]
         }
@@ -432,6 +484,19 @@
               "to": "framework/solid/reference/functions/createHeldKeyCodes"
             }
           ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "injectHeldKeys",
+              "to": "framework/angular/reference/functions/injectHeldKeys"
+            },
+            {
+              "label": "injectHeldKeyCodes",
+              "to": "framework/angular/reference/functions/injectHeldKeyCodes"
+            }
+          ]
         }
       ]
     },
@@ -490,6 +555,19 @@
             {
               "label": "SolidHotkeyRecorder",
               "to": "framework/solid/reference/interfaces/SolidHotkeyRecorder"
+            }
+          ]
+        },
+        {
+          "label": "angular",
+          "children": [
+            {
+              "label": "injectHotkeyRecorder",
+              "to": "framework/angular/reference/functions/injectHotkeyRecorder"
+            },
+            {
+              "label": "AngularHotkeyRecorder",
+              "to": "framework/angular/reference/interfaces/AngularHotkeyRecorder"
             }
           ]
         }

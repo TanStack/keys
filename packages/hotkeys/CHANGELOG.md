@@ -1,5 +1,11 @@
 # @tanstack/hotkeys
 
+## 0.2.0
+
+### Minor Changes
+
+- feat: upgrade tanstack store version ([#35](https://github.com/TanStack/hotkeys/pull/35))
+
 ## 0.1.3
 
 ### Patch Changes

@@ -253,6 +253,25 @@ export class HotkeyManager {
     callback: HotkeyCallback,
     options: HotkeyOptions = {},
   ): HotkeyRegistrationHandle {
+    // In SSR environments, return a no-op handle since there's no DOM to attach listeners to
+    if (typeof document === 'undefined' && !options.target) {
+      let currentCallback = callback
+      return {
+        id: generateId(),
+        unregister: () => {},
+        get callback() {
+          return currentCallback
+        },
+        set callback(newCallback: HotkeyCallback) {
+          currentCallback = newCallback
+        },
+        setOptions: () => {},
+        get isActive() {
+          return false
+        },
+      }
+    }
+
     const id = generateId()
     const platform = options.platform ?? this.#platform
     const parsedHotkey =
@@ -263,10 +282,9 @@ export class HotkeyManager {
       typeof hotkey === 'string' ? hotkey : formatHotkey(parsedHotkey)
     ) as Hotkey
 
-    // Resolve target: default to document if not provided or null
-    const target =
-      options.target ??
-      (typeof document !== 'undefined' ? document : ({} as Document))
+    // Resolve target: default to document if not provided
+    // Note: SSR case without explicit target is handled above
+    const target = options.target ?? document
 
     // Resolve conflict behavior
     const conflictBehavior = options.conflictBehavior ?? 'warn'
@@ -578,9 +596,23 @@ export class HotkeyManager {
     event: KeyboardEvent,
     target: HTMLElement | Document | Window,
   ): boolean {
-    // For Document and Window, check if currentTarget matches
+    // For Document and Window, verify that our handler was indeed called for this target.
+    //
+    // Browser compatibility note:
+    // Per the DOM spec, event.currentTarget should equal the element the listener was
+    // attached to. However, some Chromium-based browsers (notably Brave) exhibit
+    // non-standard behavior where event.currentTarget is set to document.documentElement
+    // (<html>) instead of document when a listener is attached to document.
+    // This may be related to privacy/fingerprinting protections.
+    //
+    // To ensure cross-browser compatibility, we accept both the expected target
+    // and document.documentElement as valid currentTarget values.
+    // See: https://dom.spec.whatwg.org/#dom-event-currenttarget
     if (target === document || target === window) {
-      return event.currentTarget === target
+      return (
+        event.currentTarget === target ||
+        event.currentTarget === document.documentElement
+      )
     }
 
     // For HTMLElement, check if event originated from or bubbled to the element

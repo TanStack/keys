@@ -334,6 +334,67 @@ describe('HotkeyManager', () => {
       document.dispatchEvent(keyupEvent)
       expect(callback).toHaveBeenCalled()
     })
+
+    describe('Brave browser compatibility (currentTarget)', () => {
+      /**
+       * Creates an event proxy that simulates Brave's non-standard behavior where
+       * event.currentTarget is document.documentElement instead of document when
+       * a listener is attached to document.
+       */
+      function createBraveLikeEvent(
+        type: 'keydown' | 'keyup',
+        key: string,
+        options: {
+          ctrlKey?: boolean
+          shiftKey?: boolean
+          altKey?: boolean
+          metaKey?: boolean
+        } = {},
+      ): KeyboardEvent {
+        const event = createKeyboardEvent(type, key, options)
+        return new Proxy(event, {
+          get(target, prop) {
+            if (prop === 'currentTarget') {
+              return document.documentElement
+            }
+            return Reflect.get(target, prop)
+          },
+        }) as KeyboardEvent
+      }
+
+      it('should fire hotkeys when currentTarget is document.documentElement (document target)', () => {
+        const manager = HotkeyManager.getInstance()
+        const callback = vi.fn()
+
+        manager.register('Mod+S', callback, { platform: 'mac' })
+
+        const event = createBraveLikeEvent('keydown', 's', { metaKey: true })
+        document.dispatchEvent(event)
+
+        expect(callback).toHaveBeenCalledTimes(1)
+        expect(callback).toHaveBeenCalledWith(
+          event,
+          expect.objectContaining({
+            hotkey: 'Mod+S',
+          }),
+        )
+      })
+
+      it('should fire hotkeys when currentTarget is document.documentElement (window target)', () => {
+        const manager = HotkeyManager.getInstance()
+        const callback = vi.fn()
+
+        manager.register('Escape', callback, {
+          platform: 'mac',
+          target: window,
+        })
+
+        const event = createBraveLikeEvent('keydown', 'Escape')
+        window.dispatchEvent(event)
+
+        expect(callback).toHaveBeenCalledTimes(1)
+      })
+    })
   })
 
   describe('requireReset option', () => {

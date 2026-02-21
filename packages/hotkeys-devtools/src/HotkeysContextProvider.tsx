@@ -40,7 +40,7 @@ export function HotkeysContextProvider(props: { children: any }) {
   createEffect(() => {
     const unsubscribe = manager.registrations.subscribe(() => {
       setRegistrations(Array.from(manager.registrations.state.values()))
-    })
+    }).unsubscribe
     onCleanup(() => unsubscribe())
   })
 
@@ -49,7 +49,7 @@ export function HotkeysContextProvider(props: { children: any }) {
     const unsubscribe = tracker.store.subscribe(() => {
       setHeldKeys(tracker.store.state.heldKeys)
       setHeldCodes(tracker.store.state.heldCodes)
-    })
+    }).unsubscribe
     onCleanup(() => unsubscribe())
   })
 

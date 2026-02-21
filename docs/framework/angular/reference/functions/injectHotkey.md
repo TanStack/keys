@@ -12,7 +12,7 @@ function injectHotkey(
    options): void;
 ```
 
-Defined in: [injectHotkey.ts:84](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkey.ts#L84)
+Defined in: [injectHotkey.ts:83](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/injectHotkey.ts#L83)
 
 Angular inject-based API for registering a keyboard hotkey.
 

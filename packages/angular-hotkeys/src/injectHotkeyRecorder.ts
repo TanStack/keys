@@ -6,15 +6,15 @@ import type { Hotkey, HotkeyRecorderOptions } from '@tanstack/hotkeys'
 
 export interface AngularHotkeyRecorder {
   /** Whether recording is currently active */
-  isRecording: () => boolean
+  readonly isRecording: () => boolean
   /** The currently recorded hotkey (for live preview) */
-  recordedHotkey: () => Hotkey | null
+  readonly recordedHotkey: () => Hotkey | null
   /** Start recording a new hotkey */
-  startRecording: () => void
+  readonly startRecording: () => void
   /** Stop recording (same as cancel) */
-  stopRecording: () => void
+  readonly stopRecording: () => void
   /** Cancel recording without saving */
-  cancelRecording: () => void
+  readonly cancelRecording: () => void
 }
 
 /**

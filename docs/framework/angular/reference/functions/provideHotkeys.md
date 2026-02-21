@@ -6,29 +6,17 @@ title: provideHotkeys
 # Function: provideHotkeys()
 
 ```ts
-function provideHotkeys(defaultOptions?): object;
+function provideHotkeys(defaultOptions): StaticProvider;
 ```
 
-Defined in: [hotkeys-provider.ts:20](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/hotkeys-provider.ts#L20)
+Defined in: [hotkeys-provider.ts:25](https://github.com/TanStack/hotkeys/blob/main/packages/angular-hotkeys/src/hotkeys-provider.ts#L25)
 
 ## Parameters
 
-### defaultOptions?
+### defaultOptions
 
 [`HotkeysProviderOptions`](../interfaces/HotkeysProviderOptions.md)
 
 ## Returns
 
-`object`
-
-### provide
-
-```ts
-provide: InjectionToken<HotkeysContextValue>;
-```
-
-### useValue
-
-```ts
-useValue: HotkeysContextValue;
-```
+`StaticProvider`

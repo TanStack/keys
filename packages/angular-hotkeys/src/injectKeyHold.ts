@@ -43,8 +43,8 @@ export function injectKeyHold(key: HeldKey | (() => HeldKey)): Signal<boolean> {
 
   return computed(() => {
     const resolvedKey = typeof key === 'function' ? key() : key
-
     const normalizedKey = resolvedKey.toLowerCase()
+
     return heldKeysSelector().some(
       (heldKey) => heldKey.toLowerCase() === normalizedKey,
     )

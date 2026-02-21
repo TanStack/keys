@@ -26,23 +26,6 @@ pnpm add @tanstack/angular-hotkeys @tanstack/hotkeys
 
 ## Quick Start
 
-**1. Provide the hotkeys context in your app config:**
-
-```ts
-// app.config.ts
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
-import { provideHotkeys } from '@tanstack/angular-hotkeys'
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHotkeys(),
-  ],
-}
-```
-
-**2. Register a hotkey in a component (injection context):**
-
 ```ts
 import { Component } from '@angular/core'
 import { injectHotkey } from '@tanstack/angular-hotkeys'
@@ -245,8 +228,11 @@ export class ShortcutSettingsComponent {
 
 ### Global Configuration
 
+To customize default options, use `provideHotkeys()`:
+
 ```ts
 // app.config.ts
+import { ApplicationConfig } from '@angular/core'
 import { provideHotkeys } from '@tanstack/angular-hotkeys'
 
 export const appConfig: ApplicationConfig = {
@@ -321,9 +307,9 @@ Hotkey recording interface.
 
 **Returns:** `isRecording`, `recordedHotkey`, `startRecording`, `stopRecording`, `cancelRecording`
 
-### `provideHotkeys(defaultOptions?)`
+### `provideHotkeys(defaultOptions)`
 
-Provider for global hotkey defaults. Use in `ApplicationConfig` providers.
+Optional provider for global hotkey defaults. Only needed when you want to customize defaults; otherwise a default context is provided automatically. Use in `ApplicationConfig` or component `providers` when customizing.
 
 ### `injectHotkeysContext()` / `injectDefaultHotkeysOptions()`
 

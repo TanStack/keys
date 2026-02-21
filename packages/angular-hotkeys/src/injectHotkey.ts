@@ -10,7 +10,6 @@ import type {
   Hotkey,
   HotkeyCallback,
   HotkeyOptions,
-  HotkeyRegistrationHandle,
   RegisterableHotkey,
 } from '@tanstack/hotkeys'
 
@@ -89,10 +88,8 @@ export function injectHotkey(
   const defaultOptions = injectDefaultHotkeysOptions()
   const manager = getHotkeyManager()
 
-  let registration: HotkeyRegistrationHandle | null = null
-
   effect((onCleanup) => {
-    // Resolve reactive values const resolvedHotkey =
+    // Resolve reactive values
     const resolvedHotkey = typeof hotkey === 'function' ? hotkey() : hotkey
     const resolvedOptions = typeof options === 'function' ? options() : options
 
@@ -123,17 +120,11 @@ export function injectHotkey(
       return
     }
 
-    // Unregister previous registration if it exists
-    if (registration?.isActive) {
-      registration.unregister()
-      registration = null
-    }
-
     // Extract options without target (target is handled separately)
     const { target: _target, ...optionsWithoutTarget } = mergedOptions
 
     // Register the hotkey
-    registration = manager.register(hotkeyString, callback, {
+    const registration = manager.register(hotkeyString, callback, {
       ...optionsWithoutTarget,
       target: resolvedTarget,
     })
@@ -146,9 +137,8 @@ export function injectHotkey(
 
     // Cleanup on disposal
     onCleanup(() => {
-      if (registration?.isActive) {
+      if (registration.isActive) {
         registration.unregister()
-        registration = null
       }
     })
   })

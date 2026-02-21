@@ -2,10 +2,22 @@ import { describe, expect, it } from 'vitest'
 import {
   formatForDisplay,
   formatHotkey,
+  formatHotkeySequence,
   formatKeyForDebuggingDisplay,
   formatWithLabels,
 } from '../src/format'
 import type { ParsedHotkey } from '../src/hotkey'
+
+describe('formatHotkeySequence', () => {
+  it('should join sequence with spaces', () => {
+    expect(formatHotkeySequence(['G', 'G'])).toBe('G G')
+    expect(formatHotkeySequence(['D', 'I', 'W'])).toBe('D I W')
+  })
+
+  it('should handle single-key sequence', () => {
+    expect(formatHotkeySequence(['Escape'])).toBe('Escape')
+  })
+})
 
 describe('formatHotkey', () => {
   it('should format a simple key', () => {

@@ -1,6 +1,6 @@
 {
   "name": "@tanstack/hotkeys",
-  "version": "0.1.3",
+  "version": "0.3.0",
   "description": "Type-safe, framework-agnostic keyboard hotkey management for the browser",
   "author": "Tanner Linsley",
   "license": "MIT",
@@ -53,6 +53,6 @@
     "src"
   ],
   "dependencies": {
-    "@tanstack/store": "^0.8.0"
+    "@tanstack/store": "^0.9.1"
   }
 }

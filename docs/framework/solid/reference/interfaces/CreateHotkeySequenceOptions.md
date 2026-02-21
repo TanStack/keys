@@ -5,20 +5,21 @@ title: CreateHotkeySequenceOptions
 
 # Interface: CreateHotkeySequenceOptions
 
-Defined in: [createHotkeySequence.ts:10](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L10)
+Defined in: [createHotkeySequence.ts:11](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L11)
 
 ## Extends
 
-- `Omit`\<`SequenceOptions`, `"enabled"`\>
+- `Omit`\<`SequenceOptions`, `"target"`\>
 
 ## Properties
 
-### enabled?
+### target?
 
 ```ts
-optional enabled: boolean;
+optional target: HTMLElement | Document | Window | null;
 ```
 
-Defined in: [createHotkeySequence.ts:15](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L15)
+Defined in: [createHotkeySequence.ts:19](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L19)
 
-Whether the sequence is enabled. Defaults to true.
+The DOM element to attach the event listener to.
+Can be a direct DOM element, an accessor, or null. Defaults to document.

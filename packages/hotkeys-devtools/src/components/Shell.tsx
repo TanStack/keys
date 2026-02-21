@@ -16,7 +16,10 @@ export function Shell() {
   const selectedRegistration = createMemo(() => {
     const id = selectedId()
     if (!id) return null
-    return state.registrations().find((r) => r.id === id) ?? null
+    const hotkey = state.registrations().find((r) => r.id === id)
+    if (hotkey) return hotkey
+    const sequence = state.sequenceRegistrations().find((r) => r.id === id)
+    return sequence ?? null
   })
 
   let dragStartX = 0

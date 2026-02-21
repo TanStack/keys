@@ -9,7 +9,7 @@ title: formatHotkey
 function formatHotkey(parsed): string;
 ```
 
-Defined in: [format.ts:23](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/format.ts#L23)
+Defined in: [format.ts:39](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/format.ts#L39)
 
 Converts a ParsedHotkey back to a hotkey string.
 

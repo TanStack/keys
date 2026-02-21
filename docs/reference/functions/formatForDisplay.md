@@ -9,7 +9,7 @@ title: formatForDisplay
 function formatForDisplay(hotkey, options): string;
 ```
 
-Defined in: [format.ts:61](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/format.ts#L61)
+Defined in: [format.ts:77](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/format.ts#L77)
 
 Formats a hotkey for display in a user interface.
 

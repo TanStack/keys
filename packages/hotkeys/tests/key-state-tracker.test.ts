@@ -119,7 +119,7 @@ describe('KeyStateTracker', () => {
 
       const unsubscribe = tracker.store.subscribe(() => {
         listener(tracker.store.state.heldKeys)
-      })
+      }).unsubscribe
 
       dispatchKey('keydown', 'a')
       expect(listener).toHaveBeenCalledWith(['A'])

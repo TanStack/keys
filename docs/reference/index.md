@@ -27,6 +27,8 @@ title: "@tanstack/hotkeys"
 - [ParsedHotkey](interfaces/ParsedHotkey.md)
 - [RawHotkey](interfaces/RawHotkey.md)
 - [SequenceOptions](interfaces/SequenceOptions.md)
+- [SequenceRegistrationHandle](interfaces/SequenceRegistrationHandle.md)
+- [SequenceRegistrationView](interfaces/SequenceRegistrationView.md)
 - [ValidationResult](interfaces/ValidationResult.md)
 
 ## Type Aliases
@@ -74,6 +76,7 @@ title: "@tanstack/hotkeys"
 - [detectPlatform](functions/detectPlatform.md)
 - [formatForDisplay](functions/formatForDisplay.md)
 - [formatHotkey](functions/formatHotkey.md)
+- [formatHotkeySequence](functions/formatHotkeySequence.md)
 - [formatKeyForDebuggingDisplay](functions/formatKeyForDebuggingDisplay.md)
 - [formatWithLabels](functions/formatWithLabels.md)
 - [getHotkeyManager](functions/getHotkeyManager.md)

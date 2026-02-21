@@ -1,5 +1,5 @@
+import { useStore } from '@tanstack/preact-store'
 import { getKeyStateTracker } from '@tanstack/hotkeys'
-import { useStoreState } from './useStoreState'
 import type { HeldKey } from '@tanstack/hotkeys'
 
 /**
@@ -46,7 +46,7 @@ export function useKeyHold(key: HeldKey): boolean {
   const tracker = getKeyStateTracker()
   const normalizedKey = key.toLowerCase()
 
-  return useStoreState(tracker.store, (state) =>
+  return useStore(tracker.store, (state) =>
     state.heldKeys.some((heldKey) => heldKey.toLowerCase() === normalizedKey),
   )
 }

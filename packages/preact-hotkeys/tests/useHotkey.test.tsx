@@ -93,7 +93,11 @@ describe('useHotkey', () => {
     const addEventListenerSpy = vi.spyOn(document, 'addEventListener')
 
     render(
-      <HotkeyTestComponent callback={callback} eventType="keyup" enabled={true} />,
+      <HotkeyTestComponent
+        callback={callback}
+        eventType="keyup"
+        enabled={true}
+      />,
     )
 
     expect(addEventListenerSpy).toHaveBeenCalledWith(

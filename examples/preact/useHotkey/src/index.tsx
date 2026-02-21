@@ -671,7 +671,11 @@ useHotkey('Mod+Space', () => toggle())`}</pre>
                 ref={editorRef}
                 className="scoped-editor"
                 value={editorContent}
-                onChange={(e) => setEditorContent(e.target.value)}
+                onChange={(e) =>
+                  setEditorContent(
+                    (e.target as HTMLTextAreaElement | null)?.value ?? '',
+                  )
+                }
                 placeholder="Focus here and try the shortcuts above..."
                 rows={8}
               />
@@ -735,4 +739,3 @@ render(
   </HotkeysProvider>,
   document.getElementById('root')!,
 )
-

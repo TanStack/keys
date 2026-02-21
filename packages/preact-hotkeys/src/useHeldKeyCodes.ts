@@ -1,5 +1,5 @@
+import { useStore } from '@tanstack/preact-store'
 import { getKeyStateTracker } from '@tanstack/hotkeys'
-import { useStoreState } from './useStoreState'
 
 /**
  * Preact hook that returns a map of currently held key names to their physical `event.code` values.
@@ -29,5 +29,5 @@ import { useStoreState } from './useStoreState'
  */
 export function useHeldKeyCodes(): Record<string, string> {
   const tracker = getKeyStateTracker()
-  return useStoreState(tracker.store, (state) => state.heldCodes)
+  return useStore(tracker.store, (state) => state.heldCodes)
 }

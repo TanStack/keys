@@ -13,6 +13,18 @@ await generateReferenceDocs({
       outputDir: resolve(__dirname, '../docs/reference'),
     },
     {
+      name: 'preact-hotkeys',
+      entryPoints: [
+        resolve(__dirname, '../packages/preact-hotkeys/src/index.ts'),
+      ],
+      tsconfig: resolve(
+        __dirname,
+        '../packages/preact-hotkeys/tsconfig.docs.json',
+      ),
+      outputDir: resolve(__dirname, '../docs/framework/preact/reference'),
+      exclude: ['packages/hotkeys/**/*'],
+    },
+    {
       name: 'react-hotkeys',
       entryPoints: [
         resolve(__dirname, '../packages/react-hotkeys/src/index.ts'),

@@ -54,8 +54,8 @@ Type-safe keyboard shortcuts for the web. Template-string bindings, parsed objec
 > You may know **TanStack Hotkeys** by our adapter names, too!
 >
 > - [**React Hotkeys**](https://tanstack.com/hotkeys/latest/docs/framework/react/react-hotkeys)
-> - Preact Hotkeys
-> - Solid Hotkeys – needs a contributor!
+> - [**Preact Hotkeys**](https://tanstack.com/hotkeys/latest/docs/framework/preact/preact-hotkeys)
+> - [**Solid Hotkeys**](https://tanstack.com/hotkeys/latest/docs/framework/solid/solid-hotkeys)
 > - Angular Hotkeys – needs a contributor!
 > - Svelte Hotkeys – needs a contributor!
 > - Vue Hotkeys – needs a contributor!

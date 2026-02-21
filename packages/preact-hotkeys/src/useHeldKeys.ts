@@ -1,5 +1,5 @@
+import { useStore } from '@tanstack/preact-store'
 import { getKeyStateTracker } from '@tanstack/hotkeys'
-import { useStoreState } from './useStoreState'
 
 /**
  * Preact hook that returns an array of currently held keyboard keys.
@@ -25,5 +25,5 @@ import { useStoreState } from './useStoreState'
  */
 export function useHeldKeys(): Array<string> {
   const tracker = getKeyStateTracker()
-  return useStoreState(tracker.store, (state) => state.heldKeys)
+  return useStore(tracker.store, (state) => state.heldKeys)
 }

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'preact/hooks'
+import { useStore } from '@tanstack/preact-store'
 import { HotkeyRecorder } from '@tanstack/hotkeys'
 import { useDefaultHotkeysOptions } from './HotkeysProvider'
-import { useStoreState } from './useStoreState'
 import type { Hotkey, HotkeyRecorderOptions } from '@tanstack/hotkeys'
 
 export interface PreactHotkeyRecorder {
@@ -75,11 +75,11 @@ export function useHotkeyRecorder(
   recorderRef.current.setOptions(mergedOptions)
 
   // Subscribe to recorder state using useStore (same pattern as useHeldKeys)
-  const isRecording = useStoreState(
+  const isRecording = useStore(
     recorderRef.current.store,
     (state) => state.isRecording,
   )
-  const recordedHotkey = useStoreState(
+  const recordedHotkey = useStore(
     recorderRef.current.store,
     (state) => state.recordedHotkey,
   )

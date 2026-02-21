@@ -142,4 +142,3 @@ render(
   </HotkeysProvider>,
   document.getElementById('root')!,
 )
-

@@ -1,0 +1,171 @@
+---
+title: Sequences Guide
+id: sequences
+---
+
+TanStack Hotkeys supports multi-key sequences -- shortcuts where you press keys one after another rather than simultaneously. This is commonly used for Vim-style navigation, cheat codes, or multi-step commands.
+
+## Basic Usage
+
+Use the `useHotkeySequence` hook to register a key sequence:
+
+```tsx
+import { useHotkeySequence } from '@tanstack/preact-hotkeys'
+
+function App() {
+  // Vim-style: press g then g to scroll to top
+  useHotkeySequence(['G', 'G'], () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
+}
+```
+
+The first argument is an array of `Hotkey` strings representing each step in the sequence. The user must press them in order within the timeout window.
+
+## Sequence Options
+
+The third argument is an options object:
+
+```tsx
+useHotkeySequence(['G', 'G'], callback, {
+  timeout: 1000,  // Time allowed between keys (ms)
+  enabled: true,  // Whether the sequence is active
+  target: document, // Or a Preact ref for scoped sequences
+})
+```
+
+### `timeout`
+
+The maximum time (in milliseconds) allowed between consecutive key presses. If the user takes longer than this between any two keys, the sequence resets. Defaults to `1000` (1 second).
+
+```tsx
+// Fast sequence - user must type quickly
+useHotkeySequence(['D', 'D'], () => deleteLine(), { timeout: 500 })
+
+// Slow sequence - user has more time between keys
+useHotkeySequence(['Shift+Z', 'Shift+Z'], () => forceQuit(), { timeout: 2000 })
+```
+
+### `enabled`
+
+Controls whether the sequence is active. Defaults to `true`.
+
+```tsx
+const [isVimMode, setIsVimMode] = useState(true)
+
+useHotkeySequence(['G', 'G'], () => scrollToTop(), { enabled: isVimMode })
+```
+
+### `target`
+
+The DOM element to attach the sequence listener to. Defaults to `document`. Can be a Preact ref, DOM element, `document`, or `window` for scoped sequences.
+
+### Global Default Options via Provider
+
+You can set default options for all `useHotkeySequence` calls by wrapping your component tree with `HotkeysProvider`. Per-hook options will override the provider defaults.
+
+```tsx
+import { HotkeysProvider } from '@tanstack/preact-hotkeys'
+
+<HotkeysProvider
+  defaultOptions={{
+    hotkeySequence: { timeout: 1500 },
+  }}
+>
+  <App />
+</HotkeysProvider>
+```
+
+## Sequences with Modifiers
+
+Each step in a sequence can include modifiers:
+
+```tsx
+// Ctrl+K followed by Ctrl+C (VS Code-style comment)
+useHotkeySequence(['Mod+K', 'Mod+C'], () => {
+  commentSelection()
+})
+
+// g then Shift+G (go to bottom, Vim-style)
+useHotkeySequence(['G', 'Shift+G'], () => {
+  scrollToBottom()
+})
+```
+
+## Common Sequence Patterns
+
+### Vim-Style Navigation
+
+```tsx
+function VimNavigation() {
+  useHotkeySequence(['G', 'G'], () => scrollToTop())
+  useHotkeySequence(['G', 'Shift+G'], () => scrollToBottom())
+  useHotkeySequence(['D', 'D'], () => deleteLine())
+  useHotkeySequence(['D', 'W'], () => deleteWord())
+  useHotkeySequence(['C', 'I', 'W'], () => changeInnerWord())
+}
+```
+
+### Konami Code
+
+```tsx
+useHotkeySequence(
+  [
+    'ArrowUp', 'ArrowUp',
+    'ArrowDown', 'ArrowDown',
+    'ArrowLeft', 'ArrowRight',
+    'ArrowLeft', 'ArrowRight',
+    'B', 'A',
+  ],
+  () => enableEasterEgg(),
+  { timeout: 2000 },
+)
+```
+
+### Multi-Step Commands
+
+```tsx
+// Press "h", "e", "l", "p" to open help
+useHotkeySequence(['H', 'E', 'L', 'P'], () => openHelp())
+```
+
+## How Sequences Work
+
+The `SequenceManager` (singleton) handles all sequence registrations. When a key is pressed:
+
+1. It checks if the key matches the next expected step in any registered sequence
+2. If it matches, the sequence advances to the next step
+3. If the timeout expires between steps, the sequence resets
+4. When all steps are completed, the callback fires
+
+### Overlapping Sequences
+
+Multiple sequences can share the same prefix. The manager tracks progress for each sequence independently:
+
+```tsx
+// Both share the 'D' prefix
+useHotkeySequence(['D', 'D'], () => deleteLine())   // dd
+useHotkeySequence(['D', 'W'], () => deleteWord())    // dw
+useHotkeySequence(['D', 'I', 'W'], () => deleteInnerWord()) // diw
+```
+
+After pressing `D`, the manager waits for the next key to determine which sequence to complete.
+
+## The Sequence Manager
+
+Under the hood, `useHotkeySequence` uses the singleton `SequenceManager`. You can also use the core `createSequenceMatcher` function for standalone sequence matching without the singleton:
+
+```tsx
+import { createSequenceMatcher } from '@tanstack/preact-hotkeys'
+
+const matcher = createSequenceMatcher(['G', 'G'], {
+  timeout: 1000,
+})
+
+document.addEventListener('keydown', (e) => {
+  if (matcher.match(e)) {
+    console.log('Sequence completed!')
+  }
+  console.log('Progress:', matcher.getProgress()) // e.g., 1/2
+})
+```

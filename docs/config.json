@@ -31,6 +31,24 @@
               "to": "framework/react/quick-start"
             }
           ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Preact Hooks",
+              "to": "framework/preact/reference/index"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Solid Primitives",
+              "to": "framework/solid/reference/index"
+            }
+          ]
         }
       ]
     },
@@ -62,6 +80,56 @@
               "to": "framework/react/guides/formatting-display"
             }
           ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Hotkeys",
+              "to": "framework/preact/guides/hotkeys"
+            },
+            {
+              "label": "Sequences",
+              "to": "framework/preact/guides/sequences"
+            },
+            {
+              "label": "Hotkey Recording",
+              "to": "framework/preact/guides/hotkey-recording"
+            },
+            {
+              "label": "Key State Tracking",
+              "to": "framework/preact/guides/key-state-tracking"
+            },
+            {
+              "label": "Formatting & Display",
+              "to": "framework/preact/guides/formatting-display"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Hotkeys",
+              "to": "framework/solid/guides/hotkeys"
+            },
+            {
+              "label": "Sequences",
+              "to": "framework/solid/guides/sequences"
+            },
+            {
+              "label": "Hotkey Recording",
+              "to": "framework/solid/guides/hotkey-recording"
+            },
+            {
+              "label": "Key State Tracking",
+              "to": "framework/solid/guides/key-state-tracking"
+            },
+            {
+              "label": "Formatting & Display",
+              "to": "framework/solid/guides/formatting-display"
+            }
+          ]
         }
       ]
     },
@@ -80,6 +148,24 @@
             {
               "label": "React Hooks",
               "to": "framework/react/reference/index"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "Preact Hooks",
+              "to": "framework/preact/reference/index"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "Solid Primitives",
+              "to": "framework/solid/reference/index"
             }
           ]
         }
@@ -136,6 +222,32 @@
               "to": "framework/react/reference/interfaces/UseHotkeyOptions"
             }
           ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useHotkey",
+              "to": "framework/preact/reference/functions/useHotkey"
+            },
+            {
+              "label": "UseHotkeyOptions",
+              "to": "framework/preact/reference/interfaces/UseHotkeyOptions"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createHotkey",
+              "to": "framework/solid/reference/functions/createHotkey"
+            },
+            {
+              "label": "CreateHotkeyOptions",
+              "to": "framework/solid/reference/interfaces/CreateHotkeyOptions"
+            }
+          ]
         }
       ]
     },
@@ -178,6 +290,32 @@
               "to": "framework/react/reference/interfaces/UseHotkeySequenceOptions"
             }
           ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useHotkeySequence",
+              "to": "framework/preact/reference/functions/useHotkeySequence"
+            },
+            {
+              "label": "UseHotkeySequenceOptions",
+              "to": "framework/preact/reference/interfaces/UseHotkeySequenceOptions"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createHotkeySequence",
+              "to": "framework/solid/reference/functions/createHotkeySequence"
+            },
+            {
+              "label": "CreateHotkeySequenceOptions",
+              "to": "framework/solid/reference/interfaces/CreateHotkeySequenceOptions"
+            }
+          ]
         }
       ]
     },
@@ -210,6 +348,24 @@
             {
               "label": "useKeyHold",
               "to": "framework/react/reference/functions/useKeyHold"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useKeyHold",
+              "to": "framework/preact/reference/functions/useKeyHold"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createKeyHold",
+              "to": "framework/solid/reference/functions/createKeyHold"
             }
           ]
         }
@@ -250,6 +406,32 @@
               "to": "framework/react/reference/functions/useHeldKeyCodes"
             }
           ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useHeldKeys",
+              "to": "framework/preact/reference/functions/useHeldKeys"
+            },
+            {
+              "label": "useHeldKeyCodes",
+              "to": "framework/preact/reference/functions/useHeldKeyCodes"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createHeldKeys",
+              "to": "framework/solid/reference/functions/createHeldKeys"
+            },
+            {
+              "label": "createHeldKeyCodes",
+              "to": "framework/solid/reference/functions/createHeldKeyCodes"
+            }
+          ]
         }
       ]
     },
@@ -282,6 +464,32 @@
             {
               "label": "ReactHotkeyRecorder",
               "to": "framework/react/reference/interfaces/ReactHotkeyRecorder"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useHotkeyRecorder",
+              "to": "framework/preact/reference/functions/useHotkeyRecorder"
+            },
+            {
+              "label": "PreactHotkeyRecorder",
+              "to": "framework/preact/reference/interfaces/PreactHotkeyRecorder"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createHotkeyRecorder",
+              "to": "framework/solid/reference/functions/createHotkeyRecorder"
+            },
+            {
+              "label": "SolidHotkeyRecorder",
+              "to": "framework/solid/reference/interfaces/SolidHotkeyRecorder"
             }
           ]
         }
@@ -372,6 +580,56 @@
             {
               "label": "useKeyHold",
               "to": "framework/react/examples/useKeyhold"
+            }
+          ]
+        },
+        {
+          "label": "preact",
+          "children": [
+            {
+              "label": "useHotkey",
+              "to": "framework/preact/examples/useHotkey"
+            },
+            {
+              "label": "useHotkeySequence",
+              "to": "framework/preact/examples/useHotkeySequence"
+            },
+            {
+              "label": "useHotkeyRecorder",
+              "to": "framework/preact/examples/useHotkeyRecorder"
+            },
+            {
+              "label": "useHeldKeys",
+              "to": "framework/preact/examples/useHeldKeys"
+            },
+            {
+              "label": "useKeyHold",
+              "to": "framework/preact/examples/useKeyhold"
+            }
+          ]
+        },
+        {
+          "label": "solid",
+          "children": [
+            {
+              "label": "createHotkey",
+              "to": "framework/solid/examples/createHotkey"
+            },
+            {
+              "label": "createHotkeySequence",
+              "to": "framework/solid/examples/createHotkeySequence"
+            },
+            {
+              "label": "createHotkeyRecorder",
+              "to": "framework/solid/examples/createHotkeyRecorder"
+            },
+            {
+              "label": "createHeldKeys",
+              "to": "framework/solid/examples/createHeldKeys"
+            },
+            {
+              "label": "createKeyHold",
+              "to": "framework/solid/examples/createKeyHold"
             }
           ]
         }

@@ -2,6 +2,8 @@ import React from 'preact/compat'
 import { render } from 'preact'
 import { useHotkey, useHotkeySequence } from '@tanstack/preact-hotkeys'
 import { HotkeysProvider } from '@tanstack/preact-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/preact-hotkeys-devtools'
+import { TanStackDevtools } from '@tanstack/preact-devtools'
 import './index.css'
 
 function App() {
@@ -13,7 +15,6 @@ function App() {
     setHistory((h) => [...h.slice(-9), action])
   }
 
-  // Vim-style navigation
   useHotkeySequence(['G', 'G'], () => addToHistory('gg → Go to top'))
   useHotkeySequence(['Shift+G'], () => addToHistory('G → Go to bottom'))
   useHotkeySequence(['D', 'D'], () => addToHistory('dd → Delete line'))
@@ -23,7 +24,6 @@ function App() {
     addToHistory('ciw → Change inner word'),
   )
 
-  // Custom sequences with different timeout
   useHotkeySequence(
     ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown'],
     () => addToHistory('↑↑↓↓ → Konami code (partial)'),
@@ -36,7 +36,6 @@ function App() {
     { timeout: 1500 },
   )
 
-  // Letter sequences
   useHotkeySequence(['H', 'E', 'L', 'L', 'O'], () =>
     addToHistory('hello → Hello World!'),
   )
@@ -142,6 +141,26 @@ function App() {
         )}
 
         <section className="demo-section">
+          <h2>Input handling</h2>
+          <p>
+            Sequences are not detected when typing in text inputs, textareas,
+            selects, or contenteditable elements. Button-type inputs (
+            <code>type="button"</code>, <code>submit</code>, <code>reset</code>)
+            still receive sequences. Focus the input below and try <kbd>g</kbd>{' '}
+            <kbd>g</kbd> or <kbd>h</kbd>
+            <kbd>e</kbd>
+            <kbd>l</kbd>
+            <kbd>l</kbd>
+            <kbd>o</kbd> — nothing will trigger. Click outside to try again.
+          </p>
+          <input
+            type="text"
+            className="demo-input"
+            placeholder="Focus here – sequences won't trigger while typing..."
+          />
+        </section>
+
+        <section className="demo-section">
           <h2>Usage</h2>
           <pre className="code-block">{`import { useHotkeySequence } from '@tanstack/preact-hotkeys'
 
@@ -185,6 +204,9 @@ function VimEditor() {
   )
 }
 
+// TanStackDevtools as sibling of App to avoid Preact hook errors when hotkeys update state
+const devtoolsPlugins = [hotkeysDevtoolsPlugin()]
+
 render(
   // optionally, provide default options to an optional HotkeysProvider
   <HotkeysProvider
@@ -195,6 +217,7 @@ render(
   // }}
   >
     <App />
+    <TanStackDevtools plugins={devtoolsPlugins} />
   </HotkeysProvider>,
   document.getElementById('root')!,
 )

@@ -2,6 +2,8 @@ import React from 'preact/compat'
 import { render } from 'preact'
 import { formatForDisplay, useHotkey } from '@tanstack/preact-hotkeys'
 import { HotkeysProvider } from '@tanstack/preact-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/preact-hotkeys-devtools'
+import { TanStackDevtools } from '@tanstack/preact-devtools'
 import type { Hotkey } from '@tanstack/preact-hotkeys'
 import './index.css'
 
@@ -673,7 +675,7 @@ useHotkey('Mod+Space', () => toggle())`}</pre>
                 value={editorContent}
                 onChange={(e) =>
                   setEditorContent(
-                    (e.target as HTMLTextAreaElement | null)?.value ?? '',
+                    (e.target as HTMLTextAreaElement)?.value ?? '',
                   )
                 }
                 placeholder="Focus here and try the shortcuts above..."
@@ -722,9 +724,15 @@ useHotkey(
 )`}</pre>
         </section>
       </main>
+
     </div>
   )
 }
+
+// TanStackDevtools must be a sibling of App, not inside it, to avoid Preact
+// "Hook can only be invoked from render methods" when hotkeys trigger state updates.
+// See: https://github.com/preactjs/preact/issues/2798
+const devtoolsPlugins = [hotkeysDevtoolsPlugin()]
 
 render(
   // optionally, provide default options to an optional HotkeysProvider
@@ -736,6 +744,7 @@ render(
   // }}
   >
     <App />
+    <TanStackDevtools plugins={devtoolsPlugins} />
   </HotkeysProvider>,
   document.getElementById('root')!,
 )

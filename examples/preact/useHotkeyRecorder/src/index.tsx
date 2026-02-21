@@ -8,6 +8,8 @@ import {
   type Hotkey,
 } from '@tanstack/preact-hotkeys'
 import { HotkeysProvider } from '@tanstack/preact-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/preact-hotkeys-devtools'
+import { TanStackDevtools } from '@tanstack/preact-devtools'
 import './index.css'
 
 interface ShortcutActions {
@@ -292,6 +294,9 @@ function App() {
   )
 }
 
+// TanStackDevtools as sibling of App to avoid Preact hook errors when hotkeys update state
+const devtoolsPlugins = [hotkeysDevtoolsPlugin()]
+
 interface ShortcutListItemProps {
   actionName: string
   hotkey: string
@@ -363,6 +368,7 @@ render(
   // }}
   >
     <App />
+    <TanStackDevtools plugins={devtoolsPlugins} />
   </HotkeysProvider>,
   document.getElementById('root')!,
 )

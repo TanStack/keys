@@ -6,6 +6,8 @@ import {
   useHeldKeyCodes,
 } from '@tanstack/preact-hotkeys'
 import { HotkeysProvider } from '@tanstack/preact-hotkeys'
+import { hotkeysDevtoolsPlugin } from '@tanstack/preact-hotkeys-devtools'
+import { TanStackDevtools } from '@tanstack/preact-devtools'
 import './index.css'
 
 function App() {
@@ -129,6 +131,9 @@ function KeyDisplay() {
   )
 }
 
+// TanStackDevtools as sibling of App to avoid Preact hook errors when hotkeys update state
+const devtoolsPlugins = [hotkeysDevtoolsPlugin()]
+
 render(
   // optionally, provide default options to an optional HotkeysProvider
   <HotkeysProvider
@@ -139,6 +144,7 @@ render(
   // }}
   >
     <App />
+    <TanStackDevtools plugins={devtoolsPlugins} />
   </HotkeysProvider>,
   document.getElementById('root')!,
 )

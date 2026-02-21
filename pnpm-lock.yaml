@@ -84,7 +84,7 @@ importers:
   examples/preact/useHeldKeys:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: ^0.1.3
+        specifier: workspace:*
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -93,6 +93,12 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.3(@babel/core@7.29.0)(preact@10.28.4)(rollup@4.58.0)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(yaml@2.8.2))
+      '@tanstack/preact-devtools':
+        specifier: 0.9.6
+        version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
+      '@tanstack/preact-hotkeys-devtools':
+        specifier: workspace:*
+        version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -103,7 +109,7 @@ importers:
   examples/preact/useHotkey:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: ^0.1.3
+        specifier: 0.3.0
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -112,6 +118,12 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.3(@babel/core@7.29.0)(preact@10.28.4)(rollup@4.58.0)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(yaml@2.8.2))
+      '@tanstack/preact-devtools':
+        specifier: 0.9.6
+        version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
+      '@tanstack/preact-hotkeys-devtools':
+        specifier: ''
+        version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -122,7 +134,7 @@ importers:
   examples/preact/useHotkeyRecorder:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: ^0.1.3
+        specifier: workspace:*
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -131,6 +143,12 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.3(@babel/core@7.29.0)(preact@10.28.4)(rollup@4.58.0)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(yaml@2.8.2))
+      '@tanstack/preact-devtools':
+        specifier: 0.9.6
+        version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
+      '@tanstack/preact-hotkeys-devtools':
+        specifier: workspace:*
+        version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -141,7 +159,7 @@ importers:
   examples/preact/useHotkeySequence:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: ^0.1.3
+        specifier: workspace:*
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -150,6 +168,12 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.3(@babel/core@7.29.0)(preact@10.28.4)(rollup@4.58.0)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(yaml@2.8.2))
+      '@tanstack/preact-devtools':
+        specifier: 0.9.6
+        version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
+      '@tanstack/preact-hotkeys-devtools':
+        specifier: workspace:*
+        version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -160,7 +184,7 @@ importers:
   examples/preact/useKeyhold:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: ^0.1.3
+        specifier: workspace:*
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -169,6 +193,12 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.3(@babel/core@7.29.0)(preact@10.28.4)(rollup@4.58.0)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(yaml@2.8.2))
+      '@tanstack/preact-devtools':
+        specifier: 0.9.6
+        version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
+      '@tanstack/preact-hotkeys-devtools':
+        specifier: workspace:*
+        version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1750,6 +1780,10 @@ packages:
     resolution: {integrity: sha512-hsNDE3iu4frt9cC2ppn1mNRnLKo2uc1/1hXAyY9z4UYb+o40M2clFAhiFoo4HngjfGJDV3x18KVVIq7W4Un+zA==}
     engines: {node: '>=18'}
 
+  '@tanstack/devtools-event-bus@0.4.0':
+    resolution: {integrity: sha512-1t+/csFuDzi+miDxAOh6Xv7VDE80gJEItkTcAZLjV5MRulbO/W8ocjHLI2Do/p2r2/FBU0eKCRTpdqvXaYoHpQ==}
+    engines: {node: '>=18'}
+
   '@tanstack/devtools-event-bus@0.4.1':
     resolution: {integrity: sha512-cNnJ89Q021Zf883rlbBTfsaxTfi2r73/qejGtyTa7ksErF3hyDyAq1aTbo5crK9dAL7zSHh9viKY1BtMls1QOA==}
     engines: {node: '>=18'}
@@ -1785,6 +1819,12 @@ packages:
       vue:
         optional: true
 
+  '@tanstack/devtools@0.10.2':
+    resolution: {integrity: sha512-6TPNl3jTrCFpyV3m9lBeHxum6btmiihbv+A3xkDpt3JScRcWP1a8G5rZzKhlOtikzG1QSiceRrbckKnIAvZ7FQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      solid-js: '>=1.9.7'
+
   '@tanstack/devtools@0.10.7':
     resolution: {integrity: sha512-ScwnFjJTMRUd6miQax7sEhq9winalQIVhm0MTX3YfjoGjMzB/jzjzYlLOraen8hcxMHH9CifTjio8ZVdqSRBRg==}
     engines: {node: '>=18'}
@@ -1796,6 +1836,12 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
+
+  '@tanstack/preact-devtools@0.9.6':
+    resolution: {integrity: sha512-eOvLrKYtst1NGXGr0TrQgjT0/kweMmVfEigEDs1GreCjFK+F1YHH+bP5nvM55Y/P8p3gUwv8cWFH3HsmA8Q2rA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      preact: '>=10.0.0'
 
   '@tanstack/preact-store@0.11.1':
     resolution: {integrity: sha512-dbaXYZX2YVtxVRcGJsSUCTH8wfAB+xFkKfnRGyEI1Z4s4js6HHbUK7GtMTTo6MCyNHYZqDI1w49Dj8Gj+IbwEA==}
@@ -5360,6 +5406,13 @@ snapshots:
     dependencies:
       '@tanstack/devtools-event-client': 0.4.0
 
+  '@tanstack/devtools-event-bus@0.4.0':
+    dependencies:
+      ws: 8.19.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@tanstack/devtools-event-bus@0.4.1':
     dependencies:
       ws: 8.19.0
@@ -5387,6 +5440,22 @@ snapshots:
       solid-js: 1.9.11
     transitivePeerDependencies:
       - csstype
+
+  '@tanstack/devtools@0.10.2(csstype@3.2.3)(solid-js@1.9.11)':
+    dependencies:
+      '@solid-primitives/event-listener': 2.4.3(solid-js@1.9.11)
+      '@solid-primitives/keyboard': 1.3.3(solid-js@1.9.11)
+      '@solid-primitives/resize-observer': 2.1.3(solid-js@1.9.11)
+      '@tanstack/devtools-client': 0.0.5
+      '@tanstack/devtools-event-bus': 0.4.0
+      '@tanstack/devtools-ui': 0.4.4(csstype@3.2.3)(solid-js@1.9.11)
+      clsx: 2.1.1
+      goober: 2.1.18(csstype@3.2.3)
+      solid-js: 1.9.11
+    transitivePeerDependencies:
+      - bufferutil
+      - csstype
+      - utf-8-validate
 
   '@tanstack/devtools@0.10.7(csstype@3.2.3)(solid-js@1.9.11)':
     dependencies:
@@ -5419,6 +5488,16 @@ snapshots:
       - eslint-import-resolver-node
       - supports-color
       - typescript
+
+  '@tanstack/preact-devtools@0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)':
+    dependencies:
+      '@tanstack/devtools': 0.10.2(csstype@3.2.3)(solid-js@1.9.11)
+      preact: 10.28.4
+    transitivePeerDependencies:
+      - bufferutil
+      - csstype
+      - solid-js
+      - utf-8-validate
 
   '@tanstack/preact-store@0.11.1(preact@10.28.4)':
     dependencies:

@@ -74,6 +74,9 @@ export function createHotkeySequence(
       ...resolvedOptions,
     } as CreateHotkeySequenceOptions
 
+    // Extract options without target (target is handled separately)
+    const { target: _target, ...optionsWithoutTarget } = mergedOptions
+
     if (resolvedSequence.length === 0) {
       return
     }
@@ -106,7 +109,7 @@ export function createHotkeySequence(
     // Sync callback and options on every effect run
     if (registration.isActive) {
       registration.callback = callback
-      registration.setOptions(mergedOptions)
+      registration.setOptions(optionsWithoutTarget)
     }
 
     // Cleanup on disposal

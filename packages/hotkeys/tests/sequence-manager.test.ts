@@ -1,12 +1,48 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { SequenceManager, createSequenceMatcher } from '../src/sequence'
+import {
+  SequenceManager,
+  createSequenceMatcher,
+  type SequenceOptions,
+} from '../src/sequence-manager'
 
 /**
  * Helper to create and dispatch a KeyboardEvent
  */
-function dispatchKey(key: string): KeyboardEvent {
-  const event = new KeyboardEvent('keydown', { key, bubbles: true })
+function dispatchKey(
+  key: string,
+  options: { eventType?: 'keydown' | 'keyup' } = {},
+): KeyboardEvent {
+  const eventType = options.eventType ?? 'keydown'
+  const event = new KeyboardEvent(eventType, { key, bubbles: true })
   document.dispatchEvent(event)
+  return event
+}
+
+/**
+ * Helper to dispatch a keyboard event from a specific element.
+ * Dispatches on the element so listeners attached to it receive the event.
+ */
+function dispatchKeyFromElement(
+  element: HTMLElement,
+  key: string,
+  options: {
+    eventType?: 'keydown' | 'keyup'
+    ctrlKey?: boolean
+    shiftKey?: boolean
+    altKey?: boolean
+    metaKey?: boolean
+  } = {},
+): KeyboardEvent {
+  const eventType = options.eventType ?? 'keydown'
+  const event = new KeyboardEvent(eventType, {
+    key,
+    ctrlKey: options.ctrlKey ?? false,
+    shiftKey: options.shiftKey ?? false,
+    altKey: options.altKey ?? false,
+    metaKey: options.metaKey ?? false,
+    bubbles: true,
+  })
+  element.dispatchEvent(event)
   return event
 }
 
@@ -43,11 +79,32 @@ describe('SequenceManager', () => {
       const manager = SequenceManager.getInstance()
       const callback = vi.fn()
 
-      const unregister = manager.register(['G', 'G'], callback)
+      const handle = manager.register(['G', 'G'], callback)
       expect(manager.getRegistrationCount()).toBe(1)
 
-      unregister()
+      handle.unregister()
       expect(manager.getRegistrationCount()).toBe(0)
+    })
+
+    it('should return handle with callback and setOptions', () => {
+      const manager = SequenceManager.getInstance()
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
+
+      const handle = manager.register(['G', 'G'], callback1)
+
+      expect(handle.id).toBeDefined()
+      expect(handle.isActive).toBe(true)
+
+      handle.callback = callback2
+      dispatchKey('g')
+      dispatchKey('g')
+      expect(callback2).toHaveBeenCalledTimes(1)
+      expect(callback1).not.toHaveBeenCalled()
+
+      handle.setOptions({ timeout: 2000 })
+      handle.unregister()
+      expect(handle.isActive).toBe(false)
     })
 
     it('should throw for empty sequence', () => {
@@ -148,41 +205,6 @@ describe('SequenceManager', () => {
   })
 
   describe('ignoreInputs option', () => {
-    /**
-     * Helper to dispatch a keyboard event from a specific element
-     */
-    function dispatchKeyFromElement(
-      element: HTMLElement,
-      key: string,
-      options: {
-        ctrlKey?: boolean
-        shiftKey?: boolean
-        altKey?: boolean
-        metaKey?: boolean
-      } = {},
-    ): KeyboardEvent {
-      const event = new KeyboardEvent('keydown', {
-        key,
-        ctrlKey: options.ctrlKey ?? false,
-        shiftKey: options.shiftKey ?? false,
-        altKey: options.altKey ?? false,
-        metaKey: options.metaKey ?? false,
-        bubbles: true,
-      })
-      Object.defineProperty(event, 'target', {
-        value: element,
-        writable: false,
-        configurable: true,
-      })
-      Object.defineProperty(event, 'currentTarget', {
-        value: document,
-        writable: false,
-        configurable: true,
-      })
-      document.dispatchEvent(event)
-      return event
-    }
-
     it('should ignore single-key sequences in input elements by default', () => {
       const manager = SequenceManager.getInstance()
       const callback = vi.fn()
@@ -318,6 +340,160 @@ describe('SequenceManager', () => {
       expect(callback).toHaveBeenCalledTimes(1)
 
       document.body.removeChild(button)
+    })
+
+    it('should fire sequence when target is the input element itself', () => {
+      const manager = SequenceManager.getInstance()
+      const callback = vi.fn()
+
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+
+      manager.register(['G', 'G'], callback, { target: input })
+
+      dispatchKeyFromElement(input, 'g')
+      dispatchKeyFromElement(input, 'g')
+
+      expect(callback).toHaveBeenCalledTimes(1)
+
+      document.body.removeChild(input)
+    })
+  })
+
+  describe('target option', () => {
+    it('should fire sequence only for events inside target element', () => {
+      const manager = SequenceManager.getInstance()
+      const callback = vi.fn()
+
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+
+      manager.register(['G', 'G'], callback, { target: div })
+
+      dispatchKeyFromElement(div, 'g')
+      dispatchKeyFromElement(div, 'g')
+
+      expect(callback).toHaveBeenCalledTimes(1)
+
+      document.body.removeChild(div)
+    })
+
+    it('should not fire sequence for events outside target element', () => {
+      const manager = SequenceManager.getInstance()
+      const callback = vi.fn()
+
+      const divA = document.createElement('div')
+      const divB = document.createElement('div')
+      document.body.appendChild(divA)
+      document.body.appendChild(divB)
+
+      manager.register(['G', 'G'], callback, { target: divA })
+
+      dispatchKeyFromElement(divB, 'g')
+      dispatchKeyFromElement(divB, 'g')
+
+      expect(callback).not.toHaveBeenCalled()
+
+      document.body.removeChild(divA)
+      document.body.removeChild(divB)
+    })
+  })
+
+  describe('eventType option', () => {
+    it('should support eventType keyup sequences', () => {
+      const manager = SequenceManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register(['G', 'G'], callback, { eventType: 'keyup' })
+
+      dispatchKey('g', { eventType: 'keydown' })
+      dispatchKey('g', { eventType: 'keyup' })
+      expect(callback).not.toHaveBeenCalled()
+
+      dispatchKey('g', { eventType: 'keydown' })
+      dispatchKey('g', { eventType: 'keyup' })
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('conflictBehavior option', () => {
+    it('should warn by default when same sequence is registered twice', () => {
+      const manager = SequenceManager.getInstance()
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      manager.register(['G', 'G'], callback1)
+      manager.register(['G', 'G'], callback2)
+
+      dispatchKey('g')
+      dispatchKey('g')
+
+      expect(callback1).toHaveBeenCalledTimes(1)
+      expect(callback2).toHaveBeenCalledTimes(1)
+      expect(warnSpy).toHaveBeenCalled()
+
+      warnSpy.mockRestore()
+    })
+
+    it('should throw with conflictBehavior error', () => {
+      const manager = SequenceManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register(['G', 'G'], callback)
+      expect(() =>
+        manager.register(['G', 'G'], callback, { conflictBehavior: 'error' }),
+      ).toThrow(/already registered/)
+
+      dispatchKey('g')
+      dispatchKey('g')
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+
+    it('should replace with conflictBehavior replace', () => {
+      const manager = SequenceManager.getInstance()
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
+
+      manager.register(['G', 'G'], callback1, { conflictBehavior: 'replace' })
+      manager.register(['G', 'G'], callback2, { conflictBehavior: 'replace' })
+
+      dispatchKey('g')
+      dispatchKey('g')
+
+      expect(callback1).not.toHaveBeenCalled()
+      expect(callback2).toHaveBeenCalledTimes(1)
+    })
+
+    it('should allow multiple with conflictBehavior allow', () => {
+      const manager = SequenceManager.getInstance()
+      const callback1 = vi.fn()
+      const callback2 = vi.fn()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      manager.register(['G', 'G'], callback1, { conflictBehavior: 'allow' })
+      manager.register(['G', 'G'], callback2, { conflictBehavior: 'allow' })
+
+      dispatchKey('g')
+      dispatchKey('g')
+
+      expect(callback1).toHaveBeenCalledTimes(1)
+      expect(callback2).toHaveBeenCalledTimes(1)
+      expect(warnSpy).not.toHaveBeenCalled()
+
+      warnSpy.mockRestore()
+    })
+  })
+
+  describe('SequenceOptions type', () => {
+    it('should not include requireReset (compile-time check)', () => {
+      // requireReset is excluded from SequenceOptions - this should type-error if someone adds it back
+      const options: SequenceOptions = {
+        timeout: 500,
+        // @ts-expect-error - requireReset is not in SequenceOptions
+        requireReset: true,
+      }
+      expect(options.timeout).toBe(500)
     })
   })
 

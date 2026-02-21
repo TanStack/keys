@@ -86,7 +86,7 @@ The parsed hotkey
 ### target
 
 ```ts
-target: Document | Window | HTMLElement;
+target: HTMLElement | Document | Window;
 ```
 
 Defined in: [hotkey-manager.ts:65](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/hotkey-manager.ts#L65)

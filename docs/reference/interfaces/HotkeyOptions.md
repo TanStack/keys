@@ -9,10 +9,6 @@ Defined in: [hotkey-manager.ts:27](https://github.com/TanStack/hotkeys/blob/main
 
 Options for registering a hotkey.
 
-## Extended by
-
-- [`SequenceOptions`](SequenceOptions.md)
-
 ## Properties
 
 ### conflictBehavior?
@@ -114,7 +110,7 @@ Stop event propagation when the hotkey matches. Defaults to true
 ### target?
 
 ```ts
-optional target: Document | Window | HTMLElement | null;
+optional target: HTMLElement | Document | Window | null;
 ```
 
 Defined in: [hotkey-manager.ts:45](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/hotkey-manager.ts#L45)

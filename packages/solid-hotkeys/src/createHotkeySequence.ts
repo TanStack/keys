@@ -5,6 +5,7 @@ import type {
   HotkeyCallback,
   HotkeySequence,
   SequenceOptions,
+  SequenceRegistrationHandle,
 } from '@tanstack/hotkeys'
 
 export interface CreateHotkeySequenceOptions extends Omit<
@@ -55,6 +56,9 @@ export function createHotkeySequence(
     | (() => CreateHotkeySequenceOptions) = {},
 ): void {
   const defaultOptions = useDefaultHotkeysOptions()
+  const manager = getSequenceManager()
+
+  let registration: SequenceRegistrationHandle | null = null
 
   createEffect(() => {
     // Resolve reactive values
@@ -67,27 +71,54 @@ export function createHotkeySequence(
       ...resolvedOptions,
     } as CreateHotkeySequenceOptions
 
-    const { enabled = true, ...sequenceOptions } = mergedOptions
+    const {
+      enabled = true,
+      target: _target,
+      ...optionsWithoutTarget
+    } = mergedOptions
 
     if (!enabled || resolvedSequence.length === 0) {
       return
     }
 
-    const manager = getSequenceManager()
+    // Resolve target: when explicitly provided (even as null), use it and skip if null.
+    // When not provided, default to document. Matches createHotkey.
+    const resolvedTarget =
+      'target' in mergedOptions
+        ? (mergedOptions.target ?? null)
+        : typeof document !== 'undefined'
+          ? document
+          : null
 
-    // Build options object conditionally to avoid overwriting manager defaults with undefined
-    const registerOptions: SequenceOptions = { enabled: true }
-    if (sequenceOptions.timeout !== undefined)
-      registerOptions.timeout = sequenceOptions.timeout
-    if (sequenceOptions.platform !== undefined)
-      registerOptions.platform = sequenceOptions.platform
+    if (!resolvedTarget) {
+      return
+    }
 
-    const unregister = manager.register(
-      resolvedSequence,
-      callback,
-      registerOptions,
-    )
+    // Unregister previous registration if it exists
+    if (registration?.isActive) {
+      registration.unregister()
+      registration = null
+    }
 
-    onCleanup(unregister)
+    // Register the sequence
+    registration = manager.register(resolvedSequence, callback, {
+      ...optionsWithoutTarget,
+      target: resolvedTarget,
+      enabled: true,
+    })
+
+    // Sync callback and options on every effect run
+    if (registration.isActive) {
+      registration.callback = callback
+      registration.setOptions(optionsWithoutTarget)
+    }
+
+    // Cleanup on disposal
+    onCleanup(() => {
+      if (registration?.isActive) {
+        registration.unregister()
+        registration = null
+      }
+    })
   })
 }

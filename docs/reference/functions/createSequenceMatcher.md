@@ -9,9 +9,13 @@ title: createSequenceMatcher
 function createSequenceMatcher(sequence, options): object;
 ```
 
-Defined in: [sequence.ts:391](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L391)
+Defined in: [sequence-manager.ts:539](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L539)
 
 Creates a simple sequence matcher for one-off use.
+
+This is a low-level helper that does not support ignoreInputs, target,
+or other HotkeyOptions. Callers must handle input filtering themselves
+if attaching to document.
 
 ## Parameters
 

@@ -1,6 +1,14 @@
+import { formatHotkeySequence } from './format'
 import { detectPlatform } from './constants'
 import { parseHotkey } from './parse'
 import { matchesKeyboardEvent } from './match'
+import {
+  defaultHotkeyOptions,
+  getDefaultIgnoreInputs,
+  handleConflict,
+  isEventForTarget,
+  isInputElement,
+} from './manager.utils'
 import type { HotkeyOptions } from './hotkey-manager'
 import type {
   Hotkey,
@@ -9,10 +17,13 @@ import type {
   ParsedHotkey,
 } from './hotkey'
 
+type Target = HTMLElement | Document | Window
+
 /**
  * Options for hotkey sequence matching.
+ * Extends HotkeyOptions but excludes requireReset (not applicable to sequences).
  */
-export interface SequenceOptions extends HotkeyOptions {
+export interface SequenceOptions extends Omit<HotkeyOptions, 'requireReset'> {
   /** Timeout between keys in milliseconds. Default: 1000 */
   timeout?: number
 }
@@ -44,18 +55,10 @@ function generateSequenceId(): string {
 }
 
 /**
- * Computes the default ignoreInputs value for a sequence based on its first step.
- * Uses the same logic as HotkeyManager: Ctrl/Meta combos and Escape fire in inputs;
- * single keys and Shift/Alt combos are ignored.
+ * Returns a canonical string for sequence conflict comparison.
  */
-function getDefaultIgnoreInputsForSequence(
-  parsedSequence: Array<ParsedHotkey>,
-): boolean {
-  const firstStep = parsedSequence[0]
-  if (!firstStep) return true
-  if (firstStep.ctrl || firstStep.meta) return false
-  if (firstStep.key === 'Escape') return false
-  return true
+function sequenceKey(sequence: HotkeySequence): string {
+  return sequence.join('|')
 }
 
 /**
@@ -67,8 +70,30 @@ interface SequenceRegistration {
   parsedSequence: Array<ParsedHotkey>
   callback: HotkeyCallback
   options: SequenceOptions
+  target: Target
   currentIndex: number
   lastKeyTime: number
+}
+
+/**
+ * A handle returned from SequenceManager.register() that allows updating
+ * the callback and options without re-registering the sequence.
+ *
+ * @example
+ * ```ts
+ * const handle = manager.register(['G', 'G'], callback, options)
+ *
+ * handle.callback = newCallback
+ * handle.setOptions({ timeout: 500 })
+ * handle.unregister()
+ * ```
+ */
+export interface SequenceRegistrationHandle {
+  readonly id: string
+  readonly isActive: boolean
+  callback: HotkeyCallback
+  setOptions: (options: Partial<SequenceOptions>) => void
+  unregister: () => void
 }
 
 /**
@@ -95,7 +120,14 @@ export class SequenceManager {
   static #instance: SequenceManager | null = null
 
   #registrations: Map<string, SequenceRegistration> = new Map()
-  #keydownListener: ((event: KeyboardEvent) => void) | null = null
+  #targetListeners: Map<
+    Target,
+    {
+      keydown: (event: KeyboardEvent) => void
+      keyup: (event: KeyboardEvent) => void
+    }
+  > = new Map()
+  #targetRegistrations: Map<Target, Set<string>> = new Map()
   #platform: 'mac' | 'windows' | 'linux'
 
   private constructor() {
@@ -128,13 +160,13 @@ export class SequenceManager {
    * @param sequence - Array of hotkey strings that form the sequence
    * @param callback - Function to call when the sequence is completed
    * @param options - Options for the sequence behavior
-   * @returns A function to unregister the sequence
+   * @returns A handle to update or unregister the sequence
    */
   register(
     sequence: HotkeySequence,
     callback: HotkeyCallback,
     options: SequenceOptions = {},
-  ): () => void {
+  ): SequenceRegistrationHandle {
     if (sequence.length === 0) {
       throw new Error('Sequence must contain at least one hotkey')
     }
@@ -145,123 +177,222 @@ export class SequenceManager {
       parseHotkey(hotkey, platform),
     )
 
+    // Resolve target: default to document if not provided or null
+    const target: Target =
+      options.target ??
+      (typeof document !== 'undefined' ? document : ({} as Document))
+
+    // Resolve conflict behavior
+    const conflictBehavior = options.conflictBehavior ?? 'warn'
+
+    // Check for existing registrations with the same sequence and target
+    const conflictingRegistration = this.#findConflictingSequence(
+      sequence,
+      target,
+    )
+
+    if (conflictingRegistration) {
+      handleConflict(
+        conflictingRegistration.id,
+        formatHotkeySequence(sequence),
+        conflictBehavior,
+        (regId) => this.#unregister(regId),
+      )
+    }
+
+    const firstStep = parsedSequence[0]!
     const resolvedIgnoreInputs =
-      options.ignoreInputs ?? getDefaultIgnoreInputsForSequence(parsedSequence)
+      options.ignoreInputs ?? getDefaultIgnoreInputs(firstStep)
+
+    const baseOptions = {
+      ...defaultHotkeyOptions,
+      timeout: DEFAULT_SEQUENCE_TIMEOUT,
+      ...options,
+      platform,
+      ignoreInputs: resolvedIgnoreInputs,
+    }
 
     const registration: SequenceRegistration = {
       id,
       sequence,
       parsedSequence,
       callback,
-      options: {
-        timeout: DEFAULT_SEQUENCE_TIMEOUT,
-        preventDefault: true,
-        stopPropagation: true,
-        enabled: true,
-        ...options,
-        platform,
-        ignoreInputs: resolvedIgnoreInputs,
-      },
+      options: baseOptions,
+      target,
       currentIndex: 0,
       lastKeyTime: 0,
     }
 
     this.#registrations.set(id, registration)
-    this.#ensureListener()
 
-    return () => {
-      this.#unregister(id)
+    // Track registration for this target
+    if (!this.#targetRegistrations.has(target)) {
+      this.#targetRegistrations.set(target, new Set())
     }
+    this.#targetRegistrations.get(target)!.add(id)
+
+    // Ensure listeners are attached for this target
+    this.#ensureListenersForTarget(target)
+
+    const manager = this
+    const handle: SequenceRegistrationHandle = {
+      get id() {
+        return id
+      },
+      get isActive() {
+        return manager.#registrations.has(id)
+      },
+      get callback() {
+        const reg = manager.#registrations.get(id)
+        return reg?.callback ?? callback
+      },
+      set callback(newCallback: HotkeyCallback) {
+        const reg = manager.#registrations.get(id)
+        if (reg) {
+          reg.callback = newCallback
+        }
+      },
+      setOptions: (newOptions: Partial<SequenceOptions>) => {
+        const reg = manager.#registrations.get(id)
+        if (reg) {
+          reg.options = { ...reg.options, ...newOptions }
+        }
+      },
+      unregister: () => {
+        manager.#unregister(id)
+      },
+    }
+
+    return handle
   }
 
   /**
    * Unregisters a sequence by its registration ID.
    */
   #unregister(id: string): void {
+    const registration = this.#registrations.get(id)
+    if (!registration) {
+      return
+    }
+
+    const target = registration.target
+
     this.#registrations.delete(id)
 
-    if (this.#registrations.size === 0) {
-      this.#removeListener()
+    // Remove from target registrations tracking
+    const targetRegs = this.#targetRegistrations.get(target)
+    if (targetRegs) {
+      targetRegs.delete(id)
+      if (targetRegs.size === 0) {
+        this.#removeListenersForTarget(target)
+      }
     }
   }
 
   /**
-   * Ensures the keydown listener is attached.
+   * Ensures event listeners are attached for a specific target.
    */
-  #ensureListener(): void {
+  #ensureListenersForTarget(target: Target): void {
     if (typeof document === 'undefined') {
       return // SSR safety
     }
 
-    if (!this.#keydownListener) {
-      this.#keydownListener = this.#handleKeyDown.bind(this)
-      document.addEventListener('keydown', this.#keydownListener)
+    if (this.#targetListeners.has(target)) {
+      return
     }
+
+    const keydownHandler = this.#createTargetKeyDownHandler(target)
+    const keyupHandler = this.#createTargetKeyUpHandler(target)
+
+    target.addEventListener('keydown', keydownHandler as EventListener)
+    target.addEventListener('keyup', keyupHandler as EventListener)
+
+    this.#targetListeners.set(target, {
+      keydown: keydownHandler,
+      keyup: keyupHandler,
+    })
   }
 
   /**
-   * Removes the keydown listener.
+   * Removes event listeners for a specific target.
    */
-  #removeListener(): void {
+  #removeListenersForTarget(target: Target): void {
     if (typeof document === 'undefined') {
       return
     }
 
-    if (this.#keydownListener) {
-      document.removeEventListener('keydown', this.#keydownListener)
-      this.#keydownListener = null
+    const listeners = this.#targetListeners.get(target)
+    if (!listeners) {
+      return
+    }
+
+    target.removeEventListener('keydown', listeners.keydown as EventListener)
+    target.removeEventListener('keyup', listeners.keyup as EventListener)
+
+    this.#targetListeners.delete(target)
+    this.#targetRegistrations.delete(target)
+  }
+
+  /**
+   * Creates a keydown handler for a specific target.
+   */
+  #createTargetKeyDownHandler(target: Target): (event: KeyboardEvent) => void {
+    return (event: KeyboardEvent) => {
+      this.#processTargetEvent(event, target, 'keydown')
     }
   }
 
   /**
-   * Checks if an element is an input-like element that should be ignored.
+   * Creates a keyup handler for a specific target.
    */
-  #isInputElement(element: EventTarget | null): boolean {
-    if (!element) {
-      return false
+  #createTargetKeyUpHandler(target: Target): (event: KeyboardEvent) => void {
+    return (event: KeyboardEvent) => {
+      this.#processTargetEvent(event, target, 'keyup')
     }
-
-    if (element instanceof HTMLInputElement) {
-      const type = element.type.toLowerCase()
-      if (type === 'button' || type === 'submit' || type === 'reset') {
-        return false
-      }
-      return true
-    }
-
-    if (
-      element instanceof HTMLTextAreaElement ||
-      element instanceof HTMLSelectElement
-    ) {
-      return true
-    }
-
-    if (element instanceof HTMLElement) {
-      const contentEditable = element.contentEditable
-      if (contentEditable === 'true' || contentEditable === '') {
-        return true
-      }
-    }
-
-    return false
   }
 
   /**
-   * Handles keydown events for sequence matching.
+   * Processes keyboard events for a specific target and event type.
    */
-  #handleKeyDown(event: KeyboardEvent): void {
+  #processTargetEvent(
+    event: KeyboardEvent,
+    target: Target,
+    eventType: 'keydown' | 'keyup',
+  ): void {
+    const targetRegs = this.#targetRegistrations.get(target)
+    if (!targetRegs) {
+      return
+    }
+
     const now = Date.now()
 
-    for (const registration of this.#registrations.values()) {
+    for (const id of targetRegs) {
+      const registration = this.#registrations.get(id)
+      if (!registration) {
+        continue
+      }
+
+      if (!isEventForTarget(event, target)) {
+        continue
+      }
+
       if (!registration.options.enabled) {
         continue
       }
 
-      // Check if we should ignore input elements
+      // Check if we should ignore input elements (defaults to true)
       if (registration.options.ignoreInputs !== false) {
-        if (this.#isInputElement(event.target)) {
-          continue
+        if (isInputElement(event.target)) {
+          // Don't ignore if the sequence is explicitly scoped to this input element
+          if (event.target !== registration.target) {
+            continue
+          }
         }
+      }
+
+      // Only process registrations that listen for this event type
+      if (registration.options.eventType !== eventType) {
+        continue
       }
 
       const timeout = registration.options.timeout ?? DEFAULT_SEQUENCE_TIMEOUT
@@ -271,7 +402,6 @@ export class SequenceManager {
         registration.currentIndex > 0 &&
         now - registration.lastKeyTime > timeout
       ) {
-        // Reset the sequence
         registration.currentIndex = 0
       }
 
@@ -281,7 +411,6 @@ export class SequenceManager {
         continue
       }
 
-      // Check if current key matches the expected key in sequence
       if (
         matchesKeyboardEvent(
           event,
@@ -292,9 +421,7 @@ export class SequenceManager {
         registration.lastKeyTime = now
         registration.currentIndex++
 
-        // Check if sequence is complete
         if (registration.currentIndex >= registration.parsedSequence.length) {
-          // Sequence complete!
           if (registration.options.preventDefault) {
             event.preventDefault()
           }
@@ -312,12 +439,9 @@ export class SequenceManager {
 
           registration.callback(event, context)
 
-          // Reset for next sequence
           registration.currentIndex = 0
         }
       } else if (registration.currentIndex > 0) {
-        // Key didn't match and we were in the middle of a sequence
-        // Check if it matches the start of the sequence (for overlapping sequences)
         const firstHotkey = registration.parsedSequence[0]!
         if (
           matchesKeyboardEvent(
@@ -329,11 +453,29 @@ export class SequenceManager {
           registration.currentIndex = 1
           registration.lastKeyTime = now
         } else {
-          // Reset the sequence
           registration.currentIndex = 0
         }
       }
     }
+  }
+
+  /**
+   * Finds an existing registration with the same sequence and target.
+   */
+  #findConflictingSequence(
+    sequence: HotkeySequence,
+    target: Target,
+  ): SequenceRegistration | null {
+    const key = sequenceKey(sequence)
+    for (const registration of this.#registrations.values()) {
+      if (
+        sequenceKey(registration.sequence) === key &&
+        registration.target === target
+      ) {
+        return registration
+      }
+    }
+    return null
   }
 
   /**
@@ -357,7 +499,9 @@ export class SequenceManager {
    * Destroys the manager and removes all listeners.
    */
   destroy(): void {
-    this.#removeListener()
+    for (const target of this.#targetListeners.keys()) {
+      this.#removeListenersForTarget(target)
+    }
     this.#registrations.clear()
   }
 }
@@ -372,6 +516,10 @@ export function getSequenceManager(): SequenceManager {
 
 /**
  * Creates a simple sequence matcher for one-off use.
+ *
+ * This is a low-level helper that does not support ignoreInputs, target,
+ * or other HotkeyOptions. Callers must handle input filtering themselves
+ * if attaching to document.
  *
  * @param sequence - The sequence of hotkeys to match
  * @param options - Options including timeout
@@ -407,7 +555,6 @@ export function createSequenceMatcher(
     match(event: KeyboardEvent): boolean {
       const now = Date.now()
 
-      // Check timeout
       if (currentIndex > 0 && now - lastKeyTime > timeout) {
         currentIndex = 0
       }
@@ -426,7 +573,6 @@ export function createSequenceMatcher(
           return true
         }
       } else if (currentIndex > 0) {
-        // Check if it matches start of sequence
         if (matchesKeyboardEvent(event, parsedSequence[0]!, platform)) {
           currentIndex = 1
           lastKeyTime = now

@@ -5,7 +5,7 @@ title: CreateHotkeySequenceOptions
 
 # Interface: CreateHotkeySequenceOptions
 
-Defined in: [createHotkeySequence.ts:10](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L10)
+Defined in: [createHotkeySequence.ts:11](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L11)
 
 ## Extends
 
@@ -19,6 +19,6 @@ Defined in: [createHotkeySequence.ts:10](https://github.com/TanStack/hotkeys/blo
 optional enabled: boolean;
 ```
 
-Defined in: [createHotkeySequence.ts:15](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L15)
+Defined in: [createHotkeySequence.ts:16](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L16)
 
 Whether the sequence is enabled. Defaults to true.

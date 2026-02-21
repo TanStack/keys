@@ -13,7 +13,6 @@ import './index.css'
 function App() {
   const [lastSequence, setLastSequence] = createSignal<string | null>(null)
   const [history, setHistory] = createSignal<Array<string>>([])
-
   const addToHistory = (action: string) => {
     setLastSequence(action)
     setHistory((h) => [...h.slice(-9), action])
@@ -142,6 +141,26 @@ function App() {
             <strong>Triggered:</strong> {lastSequence()}
           </div>
         </Show>
+
+        <section class="demo-section">
+          <h2>Input handling</h2>
+          <p>
+            Sequences are not detected when typing in text inputs, textareas,
+            selects, or contenteditable elements. Button-type inputs (
+            <code>type="button"</code>, <code>submit</code>, <code>reset</code>)
+            still receive sequences. Focus the input below and try <kbd>g</kbd>{' '}
+            <kbd>g</kbd> or <kbd>h</kbd>
+            <kbd>e</kbd>
+            <kbd>l</kbd>
+            <kbd>l</kbd>
+            <kbd>o</kbd> — nothing will trigger. Click outside to try again.
+          </p>
+          <input
+            type="text"
+            class="demo-input"
+            placeholder="Focus here – sequences won't trigger while typing..."
+          />
+        </section>
 
         <section class="demo-section">
           <h2>Usage</h2>

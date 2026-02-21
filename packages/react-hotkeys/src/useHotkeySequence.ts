@@ -1,18 +1,29 @@
 import { useEffect, useRef } from 'react'
-import { getSequenceManager } from '@tanstack/hotkeys'
+import { formatHotkeySequence, getSequenceManager } from '@tanstack/hotkeys'
 import { useDefaultHotkeysOptions } from './HotkeysProvider'
 import type {
   HotkeyCallback,
+  HotkeyCallbackContext,
   HotkeySequence,
   SequenceOptions,
+  SequenceRegistrationHandle,
 } from '@tanstack/hotkeys'
 
 export interface UseHotkeySequenceOptions extends Omit<
   SequenceOptions,
-  'enabled'
+  'target'
 > {
-  /** Whether the sequence is enabled. Defaults to true. */
-  enabled?: boolean
+  /**
+   * The DOM element to attach the event listener to.
+   * Can be a React ref, direct DOM element, or null.
+   * Defaults to document.
+   */
+  target?:
+    | React.RefObject<HTMLElement | null>
+    | HTMLElement
+    | Document
+    | Window
+    | null
 }
 
 /**
@@ -57,37 +68,105 @@ export function useHotkeySequence(
     ...options,
   } as UseHotkeySequenceOptions
 
-  const { enabled = true, ...sequenceOptions } = mergedOptions
+  const manager = getSequenceManager()
 
-  // Extract options for stable dependencies
-  const { timeout, platform, ignoreInputs } = sequenceOptions
+  // Stable ref for registration handle
+  const registrationRef = useRef<SequenceRegistrationHandle | null>(null)
 
-  // Use refs to keep callback stable
+  // Refs to capture current values for use in effect without adding dependencies
   const callbackRef = useRef(callback)
-  callbackRef.current = callback
+  const optionsRef = useRef(mergedOptions)
+  const managerRef = useRef(manager)
 
-  // Serialize sequence for dependency comparison
-  const sequenceKey = sequence.join('|')
+  // Update refs on every render
+  callbackRef.current = callback
+  optionsRef.current = mergedOptions
+  managerRef.current = manager
+
+  // Track previous target and sequence to detect changes requiring re-registration
+  const prevTargetRef = useRef<HTMLElement | Document | Window | null>(null)
+  const prevSequenceRef = useRef<string | null>(null)
+
+  // Normalize to hotkey sequence string (join with spaces)
+  const hotkeySequenceString = formatHotkeySequence(sequence)
+
+  // Extract options without target (target is handled separately)
+  const { target: _target, ...optionsWithoutTarget } = mergedOptions
 
   useEffect(() => {
-    if (!enabled || sequence.length === 0) {
+    if (!(mergedOptions.enabled ?? true)) {
+      return
+    }
+    if (sequence.length === 0) {
       return
     }
 
-    const manager = getSequenceManager()
+    // Resolve target inside the effect so refs are already attached after mount
+    const resolvedTarget = isRef(optionsRef.current.target)
+      ? optionsRef.current.target.current
+      : (optionsRef.current.target ??
+        (typeof document !== 'undefined' ? document : null))
 
-    // Build options object conditionally to avoid overwriting manager defaults with undefined
-    const registerOptions: SequenceOptions = { enabled: true }
-    if (timeout !== undefined) registerOptions.timeout = timeout
-    if (platform !== undefined) registerOptions.platform = platform
-    if (ignoreInputs !== undefined) registerOptions.ignoreInputs = ignoreInputs
+    // Skip if no valid target (SSR or ref still null)
+    if (!resolvedTarget) {
+      return
+    }
 
-    const unregister = manager.register(
-      sequence,
-      (event, context) => callbackRef.current(event, context),
-      registerOptions,
-    )
+    // Check if we need to re-register (target or sequence changed)
+    const targetChanged =
+      prevTargetRef.current !== null && prevTargetRef.current !== resolvedTarget
+    const sequenceChanged =
+      prevSequenceRef.current !== null &&
+      prevSequenceRef.current !== hotkeySequenceString
 
-    return unregister
-  }, [enabled, sequence, sequenceKey, timeout, platform, ignoreInputs])
+    // If we have an active registration and target/sequence changed, unregister first
+    if (
+      registrationRef.current?.isActive &&
+      (targetChanged || sequenceChanged)
+    ) {
+      registrationRef.current.unregister()
+      registrationRef.current = null
+    }
+
+    // Register if needed (no active registration)
+    if (!registrationRef.current || !registrationRef.current.isActive) {
+      registrationRef.current = managerRef.current.register(
+        sequence,
+        (event, context) => callbackRef.current(event, context),
+        {
+          ...optionsRef.current,
+          target: resolvedTarget,
+          enabled: true,
+        },
+      )
+    }
+
+    // Update tracking refs
+    prevTargetRef.current = resolvedTarget
+    prevSequenceRef.current = hotkeySequenceString
+
+    // Cleanup on unmount
+    return () => {
+      if (registrationRef.current?.isActive) {
+        registrationRef.current.unregister()
+        registrationRef.current = null
+      }
+    }
+  }, [hotkeySequenceString, options.enabled, mergedOptions.enabled, sequence])
+
+  // Sync callback and options on EVERY render (outside useEffect)
+  if (registrationRef.current?.isActive) {
+    registrationRef.current.callback = (
+      event: KeyboardEvent,
+      context: HotkeyCallbackContext,
+    ) => callbackRef.current(event, context)
+    registrationRef.current.setOptions(optionsWithoutTarget)
+  }
+}
+
+/**
+ * Type guard to check if a value is a React ref-like object.
+ */
+function isRef(value: unknown): value is React.RefObject<HTMLElement | null> {
+  return value !== null && typeof value === 'object' && 'current' in value
 }

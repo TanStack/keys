@@ -12,7 +12,7 @@ function createHotkeySequence(
    options): void;
 ```
 
-Defined in: [createHotkeySequence.ts:50](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L50)
+Defined in: [createHotkeySequence.ts:51](https://github.com/TanStack/hotkeys/blob/main/packages/solid-hotkeys/src/createHotkeySequence.ts#L51)
 
 SolidJS primitive for registering a keyboard shortcut sequence (Vim-style).
 

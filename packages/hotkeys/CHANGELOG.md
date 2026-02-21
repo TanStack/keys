@@ -1,5 +1,11 @@
 # @tanstack/hotkeys
 
+## 0.3.0
+
+### Minor Changes
+
+- feat: overhaul sequence-manager and hooks to be in feature parity with hotkey-manager. ([#21](https://github.com/TanStack/hotkeys/pull/21))
+
 ## 0.2.0
 
 ### Minor Changes

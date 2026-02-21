@@ -6,8 +6,9 @@
     "skipLibCheck": true,
     "moduleResolution": "Bundler",
     "jsx": "preserve",
+    "jsxImportSource": "solid-js",
     "strict": true,
-    "types": ["vite/client"]
+    "types": ["vite/client", "solid-js"]
   },
   "include": ["src", "vite.config.ts"]
 }

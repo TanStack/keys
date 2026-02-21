@@ -9,6 +9,22 @@ import { parseHotkey } from './parse'
 import type { FormatDisplayOptions, Hotkey, ParsedHotkey } from './hotkey'
 
 /**
+ * Converts a hotkey sequence array to a display string.
+ *
+ * @param sequence - Array of hotkey strings that form the sequence
+ * @returns A space-separated string (e.g. ['G','G'] → 'G G')
+ *
+ * @example
+ * ```ts
+ * formatHotkeySequence(['G', 'G'])      // 'G G'
+ * formatHotkeySequence(['D', 'I', 'W']) // 'D I W'
+ * ```
+ */
+export function formatHotkeySequence(sequence: Array<Hotkey>): string {
+  return sequence.join(' ')
+}
+
+/**
  * Converts a ParsedHotkey back to a hotkey string.
  *
  * @param parsed - The parsed hotkey object

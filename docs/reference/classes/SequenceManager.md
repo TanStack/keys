@@ -5,27 +5,20 @@ title: SequenceManager
 
 # Class: SequenceManager
 
-Defined in: [sequence.ts:79](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L79)
+Defined in: [sequence-manager.ts:148](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L148)
 
-Manages keyboard sequence matching for Vim-style shortcuts.
+## Properties
 
-This class allows registering multi-key sequences like 'g g' or 'd d'
-that trigger callbacks when the full sequence is pressed within
-a configurable timeout.
-
-## Example
+### registrations
 
 ```ts
-const matcher = SequenceManager.getInstance()
-
-// Register 'g g' to go to top
-const unregister = matcher.register(['G', 'G'], (event, context) => {
-  scrollToTop()
-}, { timeout: 500 })
-
-// Later, to unregister:
-unregister()
+readonly registrations: Store<Map<string, SequenceRegistrationView>>;
 ```
+
+Defined in: [sequence-manager.ts:155](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L155)
+
+The TanStack Store containing sequence registration views for devtools.
+Subscribe to this to observe registration changes.
 
 ## Methods
 
@@ -35,7 +28,7 @@ unregister()
 destroy(): void;
 ```
 
-Defined in: [sequence.ts:300](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L300)
+Defined in: [sequence-manager.ts:597](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L597)
 
 Destroys the manager and removes all listeners.
 
@@ -51,7 +44,7 @@ Destroys the manager and removes all listeners.
 getRegistrationCount(): number;
 ```
 
-Defined in: [sequence.ts:293](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L293)
+Defined in: [sequence-manager.ts:590](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L590)
 
 Gets the number of registered sequences.
 
@@ -67,10 +60,10 @@ Gets the number of registered sequences.
 register(
    sequence, 
    callback, 
-   options): () => void;
+   options): SequenceRegistrationHandle;
 ```
 
-Defined in: [sequence.ts:118](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L118)
+Defined in: [sequence-manager.ts:201](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L201)
 
 Registers a hotkey sequence handler.
 
@@ -96,15 +89,9 @@ Options for the sequence behavior
 
 #### Returns
 
-A function to unregister the sequence
+[`SequenceRegistrationHandle`](../interfaces/SequenceRegistrationHandle.md)
 
-```ts
-(): void;
-```
-
-##### Returns
-
-`void`
+A handle to update or unregister the sequence
 
 ***
 
@@ -114,7 +101,7 @@ A function to unregister the sequence
 resetAll(): void;
 ```
 
-Defined in: [sequence.ts:283](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L283)
+Defined in: [sequence-manager.ts:532](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L532)
 
 Resets all sequence progress.
 
@@ -124,13 +111,40 @@ Resets all sequence progress.
 
 ***
 
+### triggerSequence()
+
+```ts
+triggerSequence(id): boolean;
+```
+
+Defined in: [sequence-manager.ts:546](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L546)
+
+Triggers a sequence's callback programmatically from devtools.
+Creates a synthetic KeyboardEvent from the last key in the sequence.
+
+#### Parameters
+
+##### id
+
+`string`
+
+The registration ID to trigger
+
+#### Returns
+
+`boolean`
+
+True if the registration was found and triggered
+
+***
+
 ### getInstance()
 
 ```ts
 static getInstance(): SequenceManager;
 ```
 
-Defined in: [sequence.ts:93](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L93)
+Defined in: [sequence-manager.ts:176](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L176)
 
 Gets the singleton instance of SequenceManager.
 
@@ -146,7 +160,7 @@ Gets the singleton instance of SequenceManager.
 static resetInstance(): void;
 ```
 
-Defined in: [sequence.ts:103](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L103)
+Defined in: [sequence-manager.ts:186](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L186)
 
 Resets the singleton instance. Useful for testing.
 

@@ -3,6 +3,14 @@ import { detectPlatform, normalizeKeyName } from './constants'
 import { formatHotkey } from './format'
 import { parseHotkey, rawHotkeyToParsedHotkey } from './parse'
 import { matchesKeyboardEvent } from './match'
+import {
+  defaultHotkeyOptions,
+  getDefaultIgnoreInputs,
+  handleConflict,
+  isEventForTarget,
+  isInputElement,
+} from './manager.utils'
+import type { ConflictBehavior } from './manager.utils'
 import type {
   Hotkey,
   HotkeyCallback,
@@ -11,15 +19,7 @@ import type {
   RegisterableHotkey,
 } from './hotkey'
 
-/**
- * Behavior when registering a hotkey that conflicts with an existing registration.
- *
- * - `'warn'` - Log a warning to the console but allow both registrations (default)
- * - `'error'` - Throw an error and prevent the new registration
- * - `'replace'` - Unregister the existing hotkey and register the new one
- * - `'allow'` - Allow multiple registrations of the same hotkey without warning
- */
-export type ConflictBehavior = 'warn' | 'error' | 'replace' | 'allow'
+export type { ConflictBehavior }
 
 /**
  * Options for registering a hotkey.
@@ -109,22 +109,6 @@ export interface HotkeyRegistrationHandle {
   unregister: () => void
 }
 
-/**
- * Default options for hotkey registration.
- */
-const defaultHotkeyOptions: Omit<
-  Required<HotkeyOptions>,
-  'platform' | 'target'
-> = {
-  preventDefault: true,
-  stopPropagation: true,
-  eventType: 'keydown',
-  requireReset: false,
-  enabled: true,
-  ignoreInputs: true,
-  conflictBehavior: 'warn',
-}
-
 let registrationIdCounter = 0
 
 /**
@@ -132,16 +116,6 @@ let registrationIdCounter = 0
  */
 function generateId(): string {
   return `hotkey_${++registrationIdCounter}`
-}
-
-/**
- * Computes the default ignoreInputs value based on the hotkey.
- * Ctrl/Meta shortcuts and Escape fire in inputs; single keys and Shift/Alt combos are ignored.
- */
-function getDefaultIgnoreInputs(parsedHotkey: ParsedHotkey): boolean {
-  if (parsedHotkey.ctrl || parsedHotkey.meta) return false // Mod+S, Ctrl+C, etc.
-  if (parsedHotkey.key === 'Escape') return false // Close modal, etc.
-  return true // Single keys, Shift+key, Alt+key
 }
 
 /**
@@ -296,7 +270,12 @@ export class HotkeyManager {
     )
 
     if (conflictingRegistration) {
-      this.#handleConflict(conflictingRegistration, hotkeyStr, conflictBehavior)
+      handleConflict(
+        conflictingRegistration.id,
+        hotkeyStr,
+        conflictBehavior,
+        (id) => this.#unregister(id),
+      )
     }
 
     const resolvedIgnoreInputs =
@@ -304,6 +283,7 @@ export class HotkeyManager {
 
     const baseOptions = {
       ...defaultHotkeyOptions,
+      requireReset: false,
       ...options,
       platform,
     }
@@ -462,7 +442,7 @@ export class HotkeyManager {
       }
 
       // Check if event originated from or bubbled to this target
-      if (!this.#isEventForTarget(event, target)) {
+      if (!isEventForTarget(event, target)) {
         continue
       }
 
@@ -472,7 +452,7 @@ export class HotkeyManager {
 
       // Check if we should ignore input elements (defaults to true)
       if (registration.options.ignoreInputs !== false) {
-        if (this.#isInputElement(event.target)) {
+        if (isInputElement(event.target)) {
           // Don't ignore if the hotkey is explicitly scoped to this input element
           if (event.target !== registration.target) {
             continue
@@ -590,48 +570,6 @@ export class HotkeyManager {
   }
 
   /**
-   * Checks if an event is for the given target (originated from or bubbled to it).
-   */
-  #isEventForTarget(
-    event: KeyboardEvent,
-    target: HTMLElement | Document | Window,
-  ): boolean {
-    // For Document and Window, verify that our handler was indeed called for this target.
-    //
-    // Browser compatibility note:
-    // Per the DOM spec, event.currentTarget should equal the element the listener was
-    // attached to. However, some Chromium-based browsers (notably Brave) exhibit
-    // non-standard behavior where event.currentTarget is set to document.documentElement
-    // (<html>) instead of document when a listener is attached to document.
-    // This may be related to privacy/fingerprinting protections.
-    //
-    // To ensure cross-browser compatibility, we accept both the expected target
-    // and document.documentElement as valid currentTarget values.
-    // See: https://dom.spec.whatwg.org/#dom-event-currenttarget
-    if (target === document || target === window) {
-      return (
-        event.currentTarget === target ||
-        event.currentTarget === document.documentElement
-      )
-    }
-
-    // For HTMLElement, check if event originated from or bubbled to the element
-    if (target instanceof HTMLElement) {
-      // Check if the event's currentTarget is the target (capturing/bubbling)
-      if (event.currentTarget === target) {
-        return true
-      }
-
-      // Check if the event's target is a descendant of our target
-      if (event.target instanceof Node && target.contains(event.target)) {
-        return true
-      }
-    }
-
-    return false
-  }
-
-  /**
    * Finds an existing registration with the same hotkey and target.
    */
   #findConflictingRegistration(
@@ -644,82 +582,6 @@ export class HotkeyManager {
       }
     }
     return null
-  }
-
-  /**
-   * Handles conflicts between hotkey registrations based on conflict behavior.
-   */
-  #handleConflict(
-    conflictingRegistration: HotkeyRegistration,
-    hotkey: Hotkey,
-    conflictBehavior: ConflictBehavior,
-  ): void {
-    if (conflictBehavior === 'allow') {
-      return
-    }
-
-    if (conflictBehavior === 'warn') {
-      console.warn(
-        `Hotkey '${hotkey}' is already registered. Multiple handlers will be triggered. ` +
-          `Use conflictBehavior: 'replace' to replace the existing handler, ` +
-          `or conflictBehavior: 'allow' to suppress this warning.`,
-      )
-      return
-    }
-
-    if (conflictBehavior === 'error') {
-      throw new Error(
-        `Hotkey '${hotkey}' is already registered. ` +
-          `Use conflictBehavior: 'replace' to replace the existing handler, ` +
-          `or conflictBehavior: 'allow' to allow multiple registrations.`,
-      )
-    }
-
-    // At this point, conflictBehavior must be 'replace'
-    this.#unregister(conflictingRegistration.id)
-  }
-
-  /**
-   * Checks if an element is an input-like element that should be ignored.
-   *
-   * This includes:
-   * - HTMLInputElement (all input types except button, submit, reset)
-   * - HTMLTextAreaElement
-   * - HTMLSelectElement
-   * - Elements with contentEditable enabled
-   *
-   * Button-type inputs (button, submit, reset) are excluded so hotkeys like
-   * Mod+S and Escape fire when the user has tabbed to a form button.
-   */
-  #isInputElement(element: EventTarget | null): boolean {
-    if (!element) {
-      return false
-    }
-
-    if (element instanceof HTMLInputElement) {
-      const type = element.type.toLowerCase()
-      if (type === 'button' || type === 'submit' || type === 'reset') {
-        return false
-      }
-      return true
-    }
-
-    if (
-      element instanceof HTMLTextAreaElement ||
-      element instanceof HTMLSelectElement
-    ) {
-      return true
-    }
-
-    // Check for contenteditable elements
-    if (element instanceof HTMLElement) {
-      const contentEditable = element.contentEditable
-      if (contentEditable === 'true' || contentEditable === '') {
-        return true
-      }
-    }
-
-    return false
   }
 
   /**

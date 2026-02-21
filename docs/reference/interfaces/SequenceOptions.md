@@ -5,13 +5,14 @@ title: SequenceOptions
 
 # Interface: SequenceOptions
 
-Defined in: [sequence.ts:15](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L15)
+Defined in: [sequence-manager.ts:27](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L27)
 
 Options for hotkey sequence matching.
+Extends HotkeyOptions but excludes requireReset (not applicable to sequences).
 
 ## Extends
 
-- [`HotkeyOptions`](HotkeyOptions.md)
+- `Omit`\<[`HotkeyOptions`](HotkeyOptions.md), `"requireReset"`\>
 
 ## Properties
 
@@ -111,22 +112,6 @@ Prevent the default browser action when the hotkey matches. Defaults to true
 
 ***
 
-### requireReset?
-
-```ts
-optional requireReset: boolean;
-```
-
-Defined in: [hotkey-manager.ts:41](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/hotkey-manager.ts#L41)
-
-If true, only trigger once until all keys are released. Default: false
-
-#### Inherited from
-
-[`HotkeyOptions`](HotkeyOptions.md).[`requireReset`](HotkeyOptions.md#requirereset)
-
-***
-
 ### stopPropagation?
 
 ```ts
@@ -146,7 +131,7 @@ Stop event propagation when the hotkey matches. Defaults to true
 ### target?
 
 ```ts
-optional target: Document | Window | HTMLElement | null;
+optional target: HTMLElement | Document | Window | null;
 ```
 
 Defined in: [hotkey-manager.ts:45](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/hotkey-manager.ts#L45)
@@ -165,6 +150,6 @@ The DOM element to attach the event listener to. Defaults to document.
 optional timeout: number;
 ```
 
-Defined in: [sequence.ts:17](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence.ts#L17)
+Defined in: [sequence-manager.ts:29](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L29)
 
 Timeout between keys in milliseconds. Default: 1000

@@ -1,17 +1,30 @@
-import { HotkeyManager } from '@tanstack/hotkeys'
+import { HotkeyManager, SequenceManager } from '@tanstack/hotkeys'
 import { useStyles } from '../styles/use-styles'
-import type { HotkeyRegistration } from '@tanstack/hotkeys'
+import type {
+  HotkeyRegistration,
+  SequenceRegistrationView,
+} from '@tanstack/hotkeys'
 
 type ActionButtonsProps = {
-  registration: HotkeyRegistration
+  registration: HotkeyRegistration | SequenceRegistrationView
+}
+
+function isSequenceRegistration(
+  reg: HotkeyRegistration | SequenceRegistrationView,
+): reg is SequenceRegistrationView {
+  return 'sequence' in reg && Array.isArray(reg.sequence)
 }
 
 export function ActionButtons(props: ActionButtonsProps) {
   const styles = useStyles()
 
   const handleTrigger = () => {
-    const manager = HotkeyManager.getInstance()
-    manager.triggerRegistration(props.registration.id)
+    const reg = props.registration
+    if (isSequenceRegistration(reg)) {
+      SequenceManager.getInstance().triggerSequence(reg.id)
+    } else {
+      HotkeyManager.getInstance().triggerRegistration(reg.id)
+    }
   }
 
   return (

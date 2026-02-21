@@ -10,10 +10,13 @@ import type {
 
 export interface CreateHotkeySequenceOptions extends Omit<
   SequenceOptions,
-  'enabled'
+  'target'
 > {
-  /** Whether the sequence is enabled. Defaults to true. */
-  enabled?: boolean
+  /**
+   * The DOM element to attach the event listener to.
+   * Can be a direct DOM element, an accessor, or null. Defaults to document.
+   */
+  target?: HTMLElement | Document | Window | null
 }
 
 /**
@@ -71,13 +74,7 @@ export function createHotkeySequence(
       ...resolvedOptions,
     } as CreateHotkeySequenceOptions
 
-    const {
-      enabled = true,
-      target: _target,
-      ...optionsWithoutTarget
-    } = mergedOptions
-
-    if (!enabled || resolvedSequence.length === 0) {
+    if (resolvedSequence.length === 0) {
       return
     }
 
@@ -102,15 +99,14 @@ export function createHotkeySequence(
 
     // Register the sequence
     registration = manager.register(resolvedSequence, callback, {
-      ...optionsWithoutTarget,
+      ...mergedOptions,
       target: resolvedTarget,
-      enabled: true,
     })
 
     // Sync callback and options on every effect run
     if (registration.isActive) {
       registration.callback = callback
-      registration.setOptions(optionsWithoutTarget)
+      registration.setOptions(mergedOptions)
     }
 
     // Cleanup on disposal

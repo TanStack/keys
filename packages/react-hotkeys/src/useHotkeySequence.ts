@@ -94,9 +94,6 @@ export function useHotkeySequence(
   const { target: _target, ...optionsWithoutTarget } = mergedOptions
 
   useEffect(() => {
-    if (!(mergedOptions.enabled ?? true)) {
-      return
-    }
     if (sequence.length === 0) {
       return
     }
@@ -136,7 +133,6 @@ export function useHotkeySequence(
         {
           ...optionsRef.current,
           target: resolvedTarget,
-          enabled: true,
         },
       )
     }
@@ -152,7 +148,7 @@ export function useHotkeySequence(
         registrationRef.current = null
       }
     }
-  }, [hotkeySequenceString, options.enabled, mergedOptions.enabled, sequence])
+  }, [hotkeySequenceString, mergedOptions.enabled, sequence])
 
   // Sync callback and options on EVERY render (outside useEffect)
   if (registrationRef.current?.isActive) {

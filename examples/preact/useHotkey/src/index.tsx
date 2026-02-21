@@ -724,7 +724,6 @@ useHotkey(
 )`}</pre>
         </section>
       </main>
-
     </div>
   )
 }

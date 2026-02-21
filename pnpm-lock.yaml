@@ -84,7 +84,7 @@ importers:
   examples/preact/useHeldKeys:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -97,7 +97,7 @@ importers:
         specifier: 0.9.6
         version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
       '@tanstack/preact-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
@@ -109,7 +109,7 @@ importers:
   examples/preact/useHotkey:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: 0.3.0
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -122,7 +122,7 @@ importers:
         specifier: 0.9.6
         version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
       '@tanstack/preact-hotkeys-devtools':
-        specifier: ''
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
@@ -134,7 +134,7 @@ importers:
   examples/preact/useHotkeyRecorder:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -147,7 +147,7 @@ importers:
         specifier: 0.9.6
         version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
       '@tanstack/preact-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
@@ -159,7 +159,7 @@ importers:
   examples/preact/useHotkeySequence:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -172,7 +172,7 @@ importers:
         specifier: 0.9.6
         version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
       '@tanstack/preact-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
@@ -184,7 +184,7 @@ importers:
   examples/preact/useKeyhold:
     dependencies:
       '@tanstack/preact-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys
       preact:
         specifier: ^10.27.2
@@ -197,7 +197,7 @@ importers:
         specifier: 0.9.6
         version: 0.9.6(csstype@3.2.3)(preact@10.28.4)(solid-js@1.9.11)
       '@tanstack/preact-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
         specifier: 5.9.3
@@ -385,10 +385,10 @@ importers:
         specifier: 0.7.26
         version: 0.7.26(csstype@3.2.3)(solid-js@1.9.11)
       '@tanstack/solid-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys
       '@tanstack/solid-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys-devtools
       solid-js:
         specifier: ^1.9.11
@@ -410,10 +410,10 @@ importers:
         specifier: 0.7.26
         version: 0.7.26(csstype@3.2.3)(solid-js@1.9.11)
       '@tanstack/solid-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys
       '@tanstack/solid-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys-devtools
       solid-js:
         specifier: ^1.9.11
@@ -441,10 +441,10 @@ importers:
         specifier: 0.7.26
         version: 0.7.26(csstype@3.2.3)(solid-js@1.9.11)
       '@tanstack/solid-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys
       '@tanstack/solid-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys-devtools
       solid-js:
         specifier: ^1.9.11
@@ -466,10 +466,10 @@ importers:
         specifier: 0.7.26
         version: 0.7.26(csstype@3.2.3)(solid-js@1.9.11)
       '@tanstack/solid-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys
       '@tanstack/solid-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys-devtools
       solid-js:
         specifier: ^1.9.11
@@ -491,10 +491,10 @@ importers:
         specifier: 0.7.26
         version: 0.7.26(csstype@3.2.3)(solid-js@1.9.11)
       '@tanstack/solid-hotkeys':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys
       '@tanstack/solid-hotkeys-devtools':
-        specifier: workspace:*
+        specifier: ^0.3.0
         version: link:../../../packages/solid-hotkeys-devtools
       solid-js:
         specifier: ^1.9.11

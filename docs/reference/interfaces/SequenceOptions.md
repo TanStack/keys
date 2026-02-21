@@ -5,7 +5,7 @@ title: SequenceOptions
 
 # Interface: SequenceOptions
 
-Defined in: [sequence-manager.ts:26](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L26)
+Defined in: [sequence-manager.ts:27](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L27)
 
 Options for hotkey sequence matching.
 Extends HotkeyOptions but excludes requireReset (not applicable to sequences).
@@ -150,6 +150,6 @@ The DOM element to attach the event listener to. Defaults to document.
 optional timeout: number;
 ```
 
-Defined in: [sequence-manager.ts:28](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L28)
+Defined in: [sequence-manager.ts:29](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/sequence-manager.ts#L29)
 
 Timeout between keys in milliseconds. Default: 1000

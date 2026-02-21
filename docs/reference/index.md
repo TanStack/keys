@@ -28,6 +28,7 @@ title: "@tanstack/hotkeys"
 - [RawHotkey](interfaces/RawHotkey.md)
 - [SequenceOptions](interfaces/SequenceOptions.md)
 - [SequenceRegistrationHandle](interfaces/SequenceRegistrationHandle.md)
+- [SequenceRegistrationView](interfaces/SequenceRegistrationView.md)
 - [ValidationResult](interfaces/ValidationResult.md)
 
 ## Type Aliases

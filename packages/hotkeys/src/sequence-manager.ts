@@ -1,3 +1,4 @@
+import { Store } from '@tanstack/store'
 import { formatHotkeySequence } from './format'
 import { detectPlatform } from './constants'
 import { parseHotkey } from './parse'
@@ -62,6 +63,18 @@ function sequenceKey(sequence: HotkeySequence): string {
 }
 
 /**
+ * View of a sequence registration for devtools display.
+ * Excludes internal matching state (currentIndex, lastKeyTime).
+ */
+export interface SequenceRegistrationView {
+  id: string
+  sequence: HotkeySequence
+  options: SequenceOptions
+  target: Target
+  triggerCount: number
+}
+
+/**
  * Internal representation of a sequence registration.
  */
 interface SequenceRegistration {
@@ -73,6 +86,7 @@ interface SequenceRegistration {
   target: Target
   currentIndex: number
   lastKeyTime: number
+  triggerCount: number
 }
 
 /**
@@ -116,8 +130,30 @@ export interface SequenceRegistrationHandle {
  * unregister()
  * ```
  */
+/**
+ * Builds a devtools view from an internal registration.
+ */
+function toRegistrationView(
+  reg: SequenceRegistration,
+): SequenceRegistrationView {
+  return {
+    id: reg.id,
+    sequence: reg.sequence,
+    options: reg.options,
+    target: reg.target,
+    triggerCount: reg.triggerCount,
+  }
+}
+
 export class SequenceManager {
   static #instance: SequenceManager | null = null
+
+  /**
+   * The TanStack Store containing sequence registration views for devtools.
+   * Subscribe to this to observe registration changes.
+   */
+  readonly registrations: Store<Map<string, SequenceRegistrationView>> =
+    new Store(new Map())
 
   #registrations: Map<string, SequenceRegistration> = new Map()
   #targetListeners: Map<
@@ -221,9 +257,13 @@ export class SequenceManager {
       target,
       currentIndex: 0,
       lastKeyTime: 0,
+      triggerCount: 0,
     }
 
     this.#registrations.set(id, registration)
+    this.registrations.setState((prev) =>
+      new Map(prev).set(id, toRegistrationView(registration)),
+    )
 
     // Track registration for this target
     if (!this.#targetRegistrations.has(target)) {
@@ -256,6 +296,9 @@ export class SequenceManager {
         const reg = manager.#registrations.get(id)
         if (reg) {
           reg.options = { ...reg.options, ...newOptions }
+          manager.registrations.setState((prev) =>
+            new Map(prev).set(id, toRegistrationView(reg)),
+          )
         }
       },
       unregister: () => {
@@ -278,6 +321,11 @@ export class SequenceManager {
     const target = registration.target
 
     this.#registrations.delete(id)
+    this.registrations.setState((prev) => {
+      const next = new Map(prev)
+      next.delete(id)
+      return next
+    })
 
     // Remove from target registrations tracking
     const targetRegs = this.#targetRegistrations.get(target)
@@ -489,6 +537,54 @@ export class SequenceManager {
   }
 
   /**
+   * Triggers a sequence's callback programmatically from devtools.
+   * Creates a synthetic KeyboardEvent from the last key in the sequence.
+   *
+   * @param id - The registration ID to trigger
+   * @returns True if the registration was found and triggered
+   */
+  triggerSequence(id: string): boolean {
+    const registration = this.#registrations.get(id)
+    if (!registration) {
+      return false
+    }
+
+    const lastParsed =
+      registration.parsedSequence[registration.parsedSequence.length - 1]
+    if (!lastParsed) {
+      return false
+    }
+
+    const syntheticEvent = new KeyboardEvent(
+      registration.options.eventType ?? 'keydown',
+      {
+        key: lastParsed.key,
+        ctrlKey: lastParsed.ctrl,
+        shiftKey: lastParsed.shift,
+        altKey: lastParsed.alt,
+        metaKey: lastParsed.meta,
+        bubbles: true,
+        cancelable: true,
+      },
+    )
+
+    registration.triggerCount++
+
+    this.registrations.setState((prev) =>
+      new Map(prev).set(id, toRegistrationView(registration)),
+    )
+
+    const context: HotkeyCallbackContext = {
+      hotkey: registration.sequence.join(' ') as Hotkey,
+      parsedHotkey: lastParsed,
+    }
+
+    registration.callback(syntheticEvent, context)
+
+    return true
+  }
+
+  /**
    * Gets the number of registered sequences.
    */
   getRegistrationCount(): number {
@@ -503,6 +599,7 @@ export class SequenceManager {
       this.#removeListenersForTarget(target)
     }
     this.#registrations.clear()
+    this.registrations.setState(() => new Map())
   }
 }
 

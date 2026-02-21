@@ -58,7 +58,7 @@
     "@tanstack/hotkeys-devtools": "workspace:*"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^2.12.4",
+    "@eslint-react/eslint-plugin": "^2.13.0",
     "@types/react": "^19.2.14",
     "@vitejs/plugin-react": "^5.1.4",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",

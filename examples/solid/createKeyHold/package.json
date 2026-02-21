@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@tanstack/devtools-utils": "^0.3.0",
-    "@tanstack/solid-devtools": "0.7.25",
+    "@tanstack/solid-devtools": "0.7.26",
     "@tanstack/solid-hotkeys": "workspace:*",
     "@tanstack/solid-hotkeys-devtools": "workspace:*",
     "solid-js": "^1.9.11"

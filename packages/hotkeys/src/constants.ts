@@ -279,14 +279,17 @@ export const EDITING_KEYS = new Set<EditingKey>([
 /**
  * Set of all valid punctuation keys commonly used in keyboard shortcuts.
  *
- * These are the literal characters as they appear in `KeyboardEvent.key` (layout-dependent,
- * typically US keyboard layout). Common shortcuts include:
+ * These are the unshifted (base) characters as they appear in `KeyboardEvent.key`
+ * on a US keyboard layout. Common shortcuts include:
  * - `Mod+/` - Toggle comment
  * - `Mod+[` / `Mod+]` - Indent/outdent
  * - `Mod+=` / `Mod+-` - Zoom in/out
  *
- * Note: Punctuation keys are affected by Shift (Shift+',' → '<' on US layout),
- * so they're excluded from Shift-based hotkey combinations to avoid layout-dependent behavior.
+ * Shifted variants (e.g., `?` from `Shift+/`) are not listed separately.
+ * Instead, use `Mod+Shift+/` to register the shifted form. The matcher uses
+ * `event.code` to reliably identify the physical key regardless of shift state.
+ *
+ * @see {@link PUNCTUATION_CODE_TO_KEY} for the event.code → key mapping used in matching
  */
 export const PUNCTUATION_KEYS = new Set<PunctuationKey>([
   '/',
@@ -298,7 +301,58 @@ export const PUNCTUATION_KEYS = new Set<PunctuationKey>([
   ',',
   '.',
   '`',
+  ';',
+  "'",
 ])
+
+/**
+ * Maps `KeyboardEvent.code` values to their corresponding unshifted punctuation key.
+ *
+ * Used by the hotkey matcher as a fallback when `event.key` doesn't match
+ * due to Shift changing the produced character (e.g., `Shift+/` produces `?`
+ * in `event.key` but `event.code` remains `Slash`).
+ *
+ * This is analogous to the existing `event.code` fallbacks for letters (`KeyA`→`A`)
+ * and digits (`Digit4`→`4`), extended to cover punctuation keys.
+ *
+ * Based on the US QWERTY layout, which is the standard for `event.code` values.
+ */
+export const PUNCTUATION_CODE_TO_KEY: Record<string, PunctuationKey> = {
+  Slash: '/',
+  BracketLeft: '[',
+  BracketRight: ']',
+  Backslash: '\\',
+  Equal: '=',
+  Minus: '-',
+  Comma: ',',
+  Period: '.',
+  Backquote: '`',
+  Semicolon: ';',
+  Quote: "'",
+}
+
+/**
+ * Maps shifted punctuation characters to their base (unshifted) key.
+ *
+ * Used by the parser to normalize shifted punctuation in hotkey strings.
+ * For example, writing `Mod+?` is automatically normalized to `Mod+Shift+/`,
+ * since `?` is just the shifted form of `/` on a US keyboard.
+ *
+ * Based on the US QWERTY layout.
+ */
+export const SHIFTED_KEY_MAP: Record<string, PunctuationKey> = {
+  '?': '/',
+  '{': '[',
+  '}': ']',
+  '|': '\\',
+  '+': '=',
+  _: '-',
+  '<': ',',
+  '>': '.',
+  '~': '`',
+  ':': ';',
+  '"': "'",
+}
 
 /**
  * Set of all valid non-modifier keys.

@@ -1,4 +1,8 @@
-import { detectPlatform, normalizeKeyName } from './constants'
+import {
+  PUNCTUATION_CODE_TO_KEY,
+  detectPlatform,
+  normalizeKeyName,
+} from './constants'
 import { parseHotkey } from './parse'
 import type {
   Hotkey,
@@ -11,8 +15,9 @@ import type {
  * Checks if a KeyboardEvent matches a hotkey.
  *
  * Uses the `key` property from KeyboardEvent for matching, with a fallback to `code`
- * for letter keys (A-Z) and digit keys (0-9) when `key` produces special characters
- * (e.g., macOS Option+letter or Shift+number). Letter keys are matched case-insensitively.
+ * for letter keys (A-Z), digit keys (0-9), and punctuation keys when `key` produces
+ * unexpected characters (e.g., macOS Option+letter, Shift+number, or Shift+punctuation).
+ * Letter keys are matched case-insensitively.
  *
  * @param event - The KeyboardEvent to check
  * @param hotkey - The hotkey string or ParsedHotkey to match against
@@ -79,6 +84,16 @@ export function matchesKeyboardEvent(
       const codeDigit = event.code.slice(5) // Remove "Digit" prefix
       if (codeDigit.length === 1 && /^[0-9]$/.test(codeDigit)) {
         return codeDigit === hotkeyKey
+      }
+    }
+
+    // Fallback to event.code for punctuation keys when event.key doesn't match
+    // This handles Shift-affected keys like Shift+/ producing '?' in event.key
+    // while event.code remains 'Slash'
+    if (event.code) {
+      const baseKey = PUNCTUATION_CODE_TO_KEY[event.code]
+      if (baseKey !== undefined && baseKey === hotkeyKey) {
+        return true
       }
     }
 

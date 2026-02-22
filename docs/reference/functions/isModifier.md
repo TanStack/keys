@@ -9,7 +9,7 @@ title: isModifier
 function isModifier(key): boolean;
 ```
 
-Defined in: [parse.ts:186](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/parse.ts#L186)
+Defined in: [parse.ts:194](https://github.com/TanStack/hotkeys/blob/main/packages/hotkeys/src/parse.ts#L194)
 
 Checks if a string represents a modifier key.
 

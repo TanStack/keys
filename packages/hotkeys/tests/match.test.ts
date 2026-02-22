@@ -4,7 +4,7 @@ import {
   createMultiHotkeyHandler,
   matchesKeyboardEvent,
 } from '../src/match'
-import { Hotkey } from '../src'
+import type { Hotkey } from '../src'
 
 /**
  * Helper to create a mock KeyboardEvent
@@ -160,7 +160,7 @@ describe('matchesKeyboardEvent', () => {
         shift: false,
         alt: false,
         meta: true,
-        modifiers: ['Meta'] as ('Control' | 'Shift' | 'Alt' | 'Meta')[],
+        modifiers: ['Meta'] as Array<'Control' | 'Shift' | 'Alt' | 'Meta'>,
       }
       expect(matchesKeyboardEvent(event, parsed)).toBe(true)
     })
@@ -332,6 +332,124 @@ describe('matchesKeyboardEvent', () => {
         })
         expect(matchesKeyboardEvent(event, `Shift+${i}` as Hotkey)).toBe(true)
       }
+    })
+  })
+
+  describe('event.code fallback for punctuation keys', () => {
+    it('should match Shift+/ when event.key is ? (Shift-affected punctuation)', () => {
+      const event = createKeyboardEvent('?', {
+        shiftKey: true,
+        metaKey: true,
+        code: 'Slash',
+      })
+      expect(matchesKeyboardEvent(event, 'Mod+Shift+/', 'mac')).toBe(true)
+    })
+
+    it('should still match / without Shift', () => {
+      const event = createKeyboardEvent('/', {
+        metaKey: true,
+        code: 'Slash',
+      })
+      expect(matchesKeyboardEvent(event, 'Mod+/', 'mac')).toBe(true)
+    })
+
+    it('should not match Mod+/ when Shift is pressed (modifier mismatch)', () => {
+      const event = createKeyboardEvent('?', {
+        shiftKey: true,
+        metaKey: true,
+        code: 'Slash',
+      })
+      expect(matchesKeyboardEvent(event, 'Mod+/', 'mac')).toBe(false)
+    })
+
+    it('should match Shift+, when event.key is < (shifted comma)', () => {
+      const event = createKeyboardEvent('<', {
+        shiftKey: true,
+        code: 'Comma',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+,')).toBe(true)
+    })
+
+    it('should match Shift+. when event.key is > (shifted period)', () => {
+      const event = createKeyboardEvent('>', {
+        shiftKey: true,
+        code: 'Period',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+.')).toBe(true)
+    })
+
+    it('should match Shift+= when event.key is + (shifted equal)', () => {
+      const event = createKeyboardEvent('+', {
+        shiftKey: true,
+        code: 'Equal',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+=')).toBe(true)
+    })
+
+    it('should match Shift+` when event.key is ~ (shifted backquote)', () => {
+      const event = createKeyboardEvent('~', {
+        shiftKey: true,
+        code: 'Backquote',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+`')).toBe(true)
+    })
+
+    it('should match Shift+[ when event.key is { (shifted bracket)', () => {
+      const event = createKeyboardEvent('{', {
+        shiftKey: true,
+        code: 'BracketLeft',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+[')).toBe(true)
+    })
+
+    it('should match Shift+] when event.key is } (shifted bracket)', () => {
+      const event = createKeyboardEvent('}', {
+        shiftKey: true,
+        code: 'BracketRight',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+]')).toBe(true)
+    })
+
+    it('should match Shift+\\ when event.key is | (shifted backslash)', () => {
+      const event = createKeyboardEvent('|', {
+        shiftKey: true,
+        code: 'Backslash',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+\\')).toBe(true)
+    })
+
+    it('should match Shift+- when event.key is _ (shifted minus)', () => {
+      const event = createKeyboardEvent('_', {
+        shiftKey: true,
+        code: 'Minus',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+-')).toBe(true)
+    })
+
+    it('should work with multiple modifiers', () => {
+      const event = createKeyboardEvent('?', {
+        shiftKey: true,
+        ctrlKey: true,
+        code: 'Slash',
+      })
+      expect(matchesKeyboardEvent(event, 'Control+Shift+/')).toBe(true)
+    })
+
+    it('should not match when event.code is missing', () => {
+      const event = createKeyboardEvent('?', {
+        shiftKey: true,
+        metaKey: true,
+        code: undefined,
+      })
+      expect(matchesKeyboardEvent(event, 'Mod+Shift+/', 'mac')).toBe(false)
+    })
+
+    it('should not match when event.code maps to a different key', () => {
+      const event = createKeyboardEvent('?', {
+        shiftKey: true,
+        code: 'Slash',
+      })
+      expect(matchesKeyboardEvent(event, 'Shift+,')).toBe(false)
     })
   })
 })

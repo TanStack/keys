@@ -158,6 +158,66 @@ describe('parseHotkey', () => {
     })
   })
 
+  describe('shifted punctuation normalization', () => {
+    it('should normalize ? to Shift+/', () => {
+      const result = parseHotkey('?')
+      expect(result.key).toBe('/')
+      expect(result.shift).toBe(true)
+      expect(result.modifiers).toContain('Shift')
+    })
+
+    it('should normalize Mod+? to Mod+Shift+/', () => {
+      const result = parseHotkey('Mod+?', 'mac')
+      expect(result.key).toBe('/')
+      expect(result.shift).toBe(true)
+      expect(result.meta).toBe(true)
+      expect(result.modifiers).toEqual(['Shift', 'Meta'])
+    })
+
+    it('should normalize { to Shift+[', () => {
+      const result = parseHotkey('{')
+      expect(result.key).toBe('[')
+      expect(result.shift).toBe(true)
+    })
+
+    it('should normalize } to Shift+]', () => {
+      const result = parseHotkey('}')
+      expect(result.key).toBe(']')
+      expect(result.shift).toBe(true)
+    })
+
+    it('should normalize | to Shift+\\', () => {
+      const result = parseHotkey('|')
+      expect(result.key).toBe('\\')
+      expect(result.shift).toBe(true)
+    })
+
+    it('should normalize ~ to Shift+`', () => {
+      const result = parseHotkey('~')
+      expect(result.key).toBe('`')
+      expect(result.shift).toBe(true)
+    })
+
+    it('should normalize < to Shift+,', () => {
+      const result = parseHotkey('<')
+      expect(result.key).toBe(',')
+      expect(result.shift).toBe(true)
+    })
+
+    it('should normalize > to Shift+.', () => {
+      const result = parseHotkey('>')
+      expect(result.key).toBe('.')
+      expect(result.shift).toBe(true)
+    })
+
+    it('should not duplicate Shift when already present', () => {
+      const result = parseHotkey('Shift+?')
+      expect(result.key).toBe('/')
+      expect(result.shift).toBe(true)
+      expect(result.modifiers.filter((m) => m === 'Shift')).toHaveLength(1)
+    })
+  })
+
   describe('case insensitivity', () => {
     it('should handle lowercase modifiers', () => {
       const result = parseHotkey('ctrl+shift+a')

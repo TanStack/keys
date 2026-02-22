@@ -1,6 +1,7 @@
 import {
   MODIFIER_ALIASES,
   MODIFIER_ORDER,
+  SHIFTED_KEY_MAP,
   detectPlatform,
   normalizeKeyName,
   resolveModifier,
@@ -62,6 +63,13 @@ export function parseHotkey(
   // If no key was found (empty string), use the last part as-is
   if (!key && parts.length > 0) {
     key = normalizeKeyName(parts[parts.length - 1]!.trim())
+  }
+
+  // Normalize shifted punctuation: e.g., '?' → '/' with Shift added
+  const baseKey = SHIFTED_KEY_MAP[key]
+  if (baseKey !== undefined) {
+    key = baseKey
+    modifiers.add('Shift')
   }
 
   return {

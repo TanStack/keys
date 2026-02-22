@@ -116,7 +116,6 @@ export type EditingKey =
  */
 export type PunctuationKey =
   | '/'
-  | '?'
   | '['
   | ']'
   | '\\'
@@ -125,6 +124,8 @@ export type PunctuationKey =
   | ','
   | '.'
   | '`'
+  | ';'
+  | "'"
 
 /**
  * Keys that don't change their value when Shift is pressed.
@@ -161,7 +162,6 @@ export type HeldKey = CanonicalModifier | Key
 /**
  * Single modifier + key combinations.
  * Uses canonical modifiers (4) + Mod (1) = 5 modifiers.
- * Shift combinations exclude PunctuationKey to avoid layout-dependent issues.
  *
  * The `Mod` modifier is platform-adaptive:
  * - **macOS**: Resolves to `Meta` (Command key ⌘)
@@ -173,13 +173,12 @@ export type HeldKey = CanonicalModifier | Key
 type SingleModifierHotkey =
   | `Control+${Key}`
   | `Alt+${Key}`
-  | `Shift+${NonPunctuationKey}`
+  | `Shift+${Key}`
   | `Meta+${Key}`
   | `Mod+${Key}`
 
 /**
  * Two modifier + key combinations.
- * Shift combinations exclude Numbers and PunctuationKeys to avoid layout-dependent issues.
  *
  * **Platform-adaptive `Mod` combinations:**
  * - `Mod+Alt` and `Mod+Shift` are included (safe on all platforms)
@@ -189,17 +188,16 @@ type SingleModifierHotkey =
  */
 type TwoModifierHotkey =
   | `Control+Alt+${Key}`
-  | `Control+Shift+${NonPunctuationKey}`
+  | `Control+Shift+${Key}`
   | `Control+Meta+${Key}`
-  | `Alt+Shift+${NonPunctuationKey}`
+  | `Alt+Shift+${Key}`
   | `Alt+Meta+${Key}`
-  | `Shift+Meta+${NonPunctuationKey}`
+  | `Shift+Meta+${Key}`
   | `Mod+Alt+${Key}`
-  | `Mod+Shift+${NonPunctuationKey}`
+  | `Mod+Shift+${Key}`
 
 /**
  * Three modifier + key combinations.
- * Shift combinations exclude Numbers and PunctuationKeys to avoid layout-dependent issues.
  *
  * **Platform-adaptive `Mod` combinations:**
  * - `Mod+Alt+Shift` is included (safe on all platforms)
@@ -208,15 +206,14 @@ type TwoModifierHotkey =
  *   - `Mod+Shift+Meta` duplicates `Meta` on macOS (Mod = Meta)
  */
 type ThreeModifierHotkey =
-  | `Control+Alt+Shift+${NonPunctuationKey}`
+  | `Control+Alt+Shift+${Key}`
   | `Control+Alt+Meta+${Key}`
-  | `Control+Shift+Meta+${NonPunctuationKey}`
-  | `Alt+Shift+Meta+${NonPunctuationKey}`
-  | `Mod+Alt+Shift+${NonPunctuationKey}`
+  | `Control+Shift+Meta+${Key}`
+  | `Alt+Shift+Meta+${Key}`
+  | `Mod+Alt+Shift+${Key}`
 
 /**
  * Four modifier + key combinations.
- * Shift combinations exclude Numbers and PunctuationKeys to avoid layout-dependent issues.
  *
  * Only the canonical `Control+Alt+Shift+Meta` combination is included.
  *
@@ -227,7 +224,7 @@ type ThreeModifierHotkey =
  * - `Mod+Control+Alt+Shift` → duplicates `Control` on Windows/Linux
  * - `Mod+Alt+Shift+Meta` → duplicates `Meta` on macOS
  */
-type FourModifierHotkey = `Control+Alt+Shift+Meta+${NonPunctuationKey}`
+type FourModifierHotkey = `Control+Alt+Shift+Meta+${Key}`
 
 /**
  * A type-safe hotkey string.

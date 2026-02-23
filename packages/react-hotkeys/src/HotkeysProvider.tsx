@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react'
+import React, { createContext, use, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import type { HotkeyRecorderOptions } from '@tanstack/hotkeys'
 import type { UseHotkeyOptions } from './useHotkey'
@@ -35,17 +35,17 @@ export function HotkeysProvider({
   )
 
   return (
-    <HotkeysContext.Provider value={contextValue}>
+    <HotkeysContext value={contextValue}>
       {children}
-    </HotkeysContext.Provider>
+    </HotkeysContext>
   )
 }
 
 export function useHotkeysContext() {
-  return useContext(HotkeysContext)
+  return use(HotkeysContext)
 }
 
 export function useDefaultHotkeysOptions() {
-  const context = useContext(HotkeysContext)
+  const context = use(HotkeysContext)
   return context?.defaultOptions ?? {}
 }

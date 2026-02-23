@@ -67,19 +67,25 @@ export function injectHotkeySequence(
 
     const manager = getSequenceManager()
 
-    // Build options object conditionally to avoid overwriting manager defaults with undefined
-    const registerOptions: SequenceOptions = { enabled: true }
-    if (sequenceOptions.timeout !== undefined)
-      registerOptions.timeout = sequenceOptions.timeout
-    if (sequenceOptions.platform !== undefined)
-      registerOptions.platform = sequenceOptions.platform
+    // Pass through options; default target to document when not provided
+    const registerOptions: SequenceOptions = {
+      ...sequenceOptions,
+      enabled: true,
+      target:
+        sequenceOptions.target ??
+        (typeof document !== 'undefined' ? document : undefined),
+    }
 
-    const unregister = manager.register(
+    const handle = manager.register(
       resolvedSequence,
       callback,
       registerOptions,
     )
 
-    onCleanup(unregister)
+    onCleanup(() => {
+      if (handle.isActive) {
+        handle.unregister()
+      }
+    })
   })
 }

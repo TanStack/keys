@@ -450,8 +450,8 @@ importers:
         specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
-        specifier: 5.9.3
-        version: 5.9.3
+        specifier: 5.8.3
+        version: 5.8.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
@@ -475,8 +475,8 @@ importers:
         specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
-        specifier: 5.9.3
-        version: 5.9.3
+        specifier: 5.8.3
+        version: 5.8.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
@@ -500,8 +500,8 @@ importers:
         specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
-        specifier: 5.9.3
-        version: 5.9.3
+        specifier: 5.8.3
+        version: 5.8.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
@@ -525,8 +525,8 @@ importers:
         specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
-        specifier: 5.9.3
-        version: 5.9.3
+        specifier: 5.8.3
+        version: 5.8.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
@@ -550,8 +550,8 @@ importers:
         specifier: ^0.3.0
         version: link:../../../packages/preact-hotkeys-devtools
       typescript:
-        specifier: 5.9.3
-        version: 5.9.3
+        specifier: 5.8.3
+        version: 5.8.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
@@ -770,17 +770,17 @@ importers:
         version: 1.9.11
     devDependencies:
       '@types/node':
-        specifier: ^25.2.3
-        version: 25.2.3
+        specifier: ^25.3.0
+        version: 25.3.0
       typescript:
         specifier: 5.8.3
         version: 5.8.3
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
+        version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
       vite-plugin-solid:
         specifier: ^2.11.10
-        version: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2))
+        version: 2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2))
 
   examples/solid/createHotkeyRecorder:
     dependencies:
@@ -3879,9 +3879,6 @@ packages:
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
-
-  '@types/node@25.2.3':
-    resolution: {integrity: sha512-m0jEgYlYz+mDJZ2+F4v8D1AyQb+QzsNqRuI7xg1VQX/KlKS0qT9r1Mo16yo5F/MtifXFgaofIFsdFMox2SxIbQ==}
 
   '@types/node@25.3.0':
     resolution: {integrity: sha512-4K3bqJpXpqfg2XKGK9bpDTc6xO/xoUP/RBWS7AtRMug6zZFaRekiLzjVtAoZMquxoAbzBvy5nxQ7veS5eYzf8A==}
@@ -7680,9 +7677,6 @@ packages:
   unconfig-core@7.4.2:
     resolution: {integrity: sha512-VgPCvLWugINbXvMQDf8Jh0mlbvNjNC6eSUziHsBCMpxR05OPrNrvDnyatdMjRgcHaaNsCqz+wjNXxNw1kRLHUg==}
 
-  undici-types@7.16.0:
-    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
-
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
@@ -11129,10 +11123,6 @@ snapshots:
       '@types/node': 25.3.0
 
   '@types/node@12.20.55': {}
-
-  '@types/node@25.2.3':
-    dependencies:
-      undici-types: 7.16.0
 
   '@types/node@25.3.0':
     dependencies:
@@ -15445,8 +15435,6 @@ snapshots:
       '@quansync/fs': 1.0.0
       quansync: 1.0.0
 
-  undici-types@7.16.0: {}
-
   undici-types@7.18.2: {}
 
   undici@7.21.0: {}
@@ -15533,21 +15521,6 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-solid@2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)):
-    dependencies:
-      '@babel/core': 7.29.0
-      '@types/babel__core': 7.20.5
-      babel-preset-solid: 1.9.10(@babel/core@7.29.0)(solid-js@1.9.11)
-      merge-anything: 5.1.7
-      solid-js: 1.9.11
-      solid-refresh: 0.6.3(solid-js@1.9.11)
-      vite: 7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
-      vitefu: 1.1.1(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2))
-    optionalDependencies:
-      '@testing-library/jest-dom': 6.9.1
-    transitivePeerDependencies:
-      - supports-color
-
   vite-plugin-solid@2.11.10(@testing-library/jest-dom@6.9.1)(solid-js@1.9.11)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)):
     dependencies:
       '@babel/core': 7.29.0
@@ -15590,23 +15563,6 @@ snapshots:
       terser: 5.39.0
       yaml: 2.8.2
 
-  vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2):
-    dependencies:
-      esbuild: 0.27.3
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.57.1
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 25.2.3
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      less: 4.2.2
-      sass: 1.85.0
-      terser: 5.39.0
-      yaml: 2.8.2
-
   vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2):
     dependencies:
       esbuild: 0.27.3
@@ -15623,10 +15579,6 @@ snapshots:
       sass: 1.85.0
       terser: 5.39.0
       yaml: 2.8.2
-
-  vitefu@1.1.1(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)):
-    optionalDependencies:
-      vite: 7.3.1(@types/node@25.2.3)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)
 
   vitefu@1.1.1(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(less@4.2.2)(sass@1.85.0)(terser@5.39.0)(yaml@2.8.2)):
     optionalDependencies:

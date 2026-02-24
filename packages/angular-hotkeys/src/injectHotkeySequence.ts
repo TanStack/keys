@@ -76,11 +76,7 @@ export function injectHotkeySequence(
         (typeof document !== 'undefined' ? document : undefined),
     }
 
-    const handle = manager.register(
-      resolvedSequence,
-      callback,
-      registerOptions,
-    )
+    const handle = manager.register(resolvedSequence, callback, registerOptions)
 
     onCleanup(() => {
       if (handle.isActive) {

@@ -14,6 +14,11 @@ import type {
  * for letter keys (A-Z) and digit keys (0-9) when `key` produces special characters
  * (e.g., macOS Option+letter or Shift+number). Letter keys are matched case-insensitively.
  *
+ * Also handles "dead key" events where `event.key` is `'Dead'` instead of the expected
+ * character. This commonly occurs on macOS with Option+letter combinations (e.g., Option+E,
+ * Option+I, Option+U, Option+N) and on Windows/Linux with international keyboard layouts.
+ * In these cases, `event.code` is used to determine the physical key.
+ *
  * @param event - The KeyboardEvent to check
  * @param hotkey - The hotkey string or ParsedHotkey to match against
  * @param platform - The target platform for resolving 'Mod' (defaults to auto-detection)
@@ -54,6 +59,25 @@ export function matchesKeyboardEvent(
   // Check key (case-insensitive for letters)
   const eventKey = normalizeKeyName(event.key)
   const hotkeyKey = parsed.key
+
+  // Handle dead keys: certain modifier+letter combos produce event.key === 'Dead'
+  // (e.g., macOS Option+E, or international layouts on Windows/Linux).
+  // In this case, event.key is unusable but event.code still identifies the physical key.
+  if (eventKey === 'Dead') {
+    if (event.code && event.code.startsWith('Key')) {
+      const codeLetter = event.code.slice(3)
+      if (codeLetter.length === 1 && /^[A-Za-z]$/.test(codeLetter)) {
+        return codeLetter.toUpperCase() === hotkeyKey.toUpperCase()
+      }
+    }
+    if (event.code && event.code.startsWith('Digit')) {
+      const codeDigit = event.code.slice(5)
+      if (codeDigit.length === 1 && /^[0-9]$/.test(codeDigit)) {
+        return codeDigit === hotkeyKey
+      }
+    }
+    return false
+  }
 
   // For single letters, compare case-insensitively
   if (eventKey.length === 1 && hotkeyKey.length === 1) {

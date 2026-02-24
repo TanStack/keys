@@ -9,6 +9,8 @@ TanStack Hotkeys is compatible with various front-end frameworks. Install the co
 
 react: @tanstack/react-hotkeys
 preact: @tanstack/preact-hotkeys
+solid: @tanstack/solid-hotkeys
+angular: @tanstack/angular-hotkeys
 
 <!-- ::end:tabs -->
 

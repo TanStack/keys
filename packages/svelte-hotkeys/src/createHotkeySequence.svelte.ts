@@ -21,6 +21,42 @@ export interface CreateHotkeySequenceOptions extends Omit<
   target?: HTMLElement | Document | Window | null
 }
 
+/**
+ * Svelte function for registering a keyboard shortcut sequence (Vim-style).
+ *
+ * This hook allows you to register multi-key sequences like 'g g' or 'd d'
+ * that trigger when the full sequence is pressed within a timeout.
+ *
+ * @param sequence - Array of hotkey strings that form the sequence
+ * @param callback - Function to call when the sequence is completed
+ * @param options - Options for the sequence behavior
+ *
+ * @example
+ * ```svelte
+ * <script lang="ts">
+ *   import { createHotkeySequence } from '@tanstack/svelte-hotkeys'
+ *
+ *   // Scroll to top when 'G G' is pressed
+ *   createHotkeySequence(['G', 'G'], () => {
+ *     scrollToTop()
+ *   })
+ *
+ *   // Delete line when 'D D' is pressed
+ *   createHotkeySequence(['D', 'D'], () => {
+ *     deleteLine()
+ *   })
+ *
+ *   // Delete inner word when 'D I W' is pressed
+ *   createHotkeySequence(['D', 'I', 'W'], () => {
+ *     deleteInnerWord()
+ *   }, { timeout: 500 })
+ * </script>
+ *
+ * <div>
+ *   ....
+ * </div>
+ * ```
+ */
 export function createHotkeySequence(
   sequence: HotkeySequence,
   callback: HotkeyCallback,

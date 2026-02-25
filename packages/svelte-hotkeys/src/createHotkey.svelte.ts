@@ -34,6 +34,42 @@ export interface CreateHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
  * callbacks that reference Svelte state will always have access to
  * the latest values.
  *
+ * @example
+ * ```svelte
+ *
+ * <script lang="ts">
+ *   import { createHotkey } from '@tanstack/svelte-hotkeys'
+ *
+ *   let ref = $state<HTMLButtonElement | null>(null)
+ *
+ *   createHotkey('Mod+S', () => {
+ *     console.log('Mod+S pressed')
+ *   }, { target: ref })
+ * </script>
+ *
+ * <div bind:this={ref}>
+ *   ....
+ * </div>
+ * ```
+ *
+ * @example
+ * ```svelte
+ * <script lang="ts">
+ *   import { createHotkey } from '@tanstack/svelte-hotkeys'
+ *
+ *   let ref = $state<HTMLDivElement | null>(null)
+ *   let count = $state(0)
+ *
+ *   createHotkey('Mod+S', () => {
+ *     console.log('Mod+S pressed')
+ *     count++
+ *   }, { target: ref })
+ * </script>
+ *
+ * <div bind:this={ref}>
+ *   Count: {count}
+ * </div>
+ * ```
  */
 
 export function createHotkey(

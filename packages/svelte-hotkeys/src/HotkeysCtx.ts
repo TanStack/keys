@@ -3,6 +3,10 @@ import { CreateHotkeyOptions } from './createHotkey.svelte'
 import { HotkeyRecorderOptions } from '@tanstack/hotkeys'
 import { CreateHotkeySequenceOptions } from './createHotkeySequence.svelte'
 
+export type Target = ResolvedTarget | (() => ResolvedTarget)
+
+export type ResolvedTarget = HTMLElement | Document | Window | null
+
 export interface HotkeysProviderOptions {
   hotkey?: Partial<CreateHotkeyOptions>
   hotkeyRecorder?: Partial<HotkeyRecorderOptions>

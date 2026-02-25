@@ -11,7 +11,7 @@ import type {
   HotkeyRegistrationHandle,
   RegisterableHotkey,
 } from '@tanstack/hotkeys'
-import { getDefaultHotkeysOptions } from './HotkeysCtx'
+import { getDefaultHotkeysOptions, ResolvedTarget, Target } from './HotkeysCtx'
 
 export interface CreateHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
   /**
@@ -19,7 +19,15 @@ export interface CreateHotkeyOptions extends Omit<HotkeyOptions, 'target'> {
    * Can be a Svelte ref, direct DOM element, or null.
    * Defaults to document.
    */
-  target?: HTMLElement | Document | Window | null
+  target?: Target
+}
+
+function resolveTarget(target: Target): ResolvedTarget {
+  if (typeof target === 'function') {
+    return target() ?? null
+  }
+
+  return target
 }
 
 /**
@@ -99,7 +107,7 @@ export function createHotkey(
   })
 
   // Track previous target and hotkey to detect changes requiring re-registration
-  let prevTargetRef: HTMLElement | Document | Window | null = null
+  let prevTargetRef: ResolvedTarget = null
   let prevHotkeyRef: string | null = null
 
   // Normalize to hotkey string
@@ -115,7 +123,7 @@ export function createHotkey(
   $effect(() => {
     // Resolve target inside the effect so refs are already attached after mount
     const resolvedTarget = optionsRef?.target
-      ? optionsRef.target
+      ? resolveTarget(optionsRef.target)
       : typeof document !== 'undefined'
         ? document
         : null

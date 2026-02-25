@@ -1,4 +1,5 @@
 import { getKeyStateTracker } from '@tanstack/hotkeys'
+import { useStore } from '@tanstack/svelte-store'
 
 /**
  * Svelte function that returns a map of currently held key names to their physical `event.code` values.
@@ -26,7 +27,8 @@ import { getKeyStateTracker } from '@tanstack/hotkeys'
 export function getHeldKeyCodesMap(): Record<string, string> {
   const tracker = getKeyStateTracker()
 
-  const heldKeyCodesMap = $derived.by(() => tracker.store.state.heldCodes)
+  const heldKeyCodesMap = useStore(tracker.store, (state) => state.heldCodes)
+    .current as Record<string, string>
 
   return heldKeyCodesMap
 }

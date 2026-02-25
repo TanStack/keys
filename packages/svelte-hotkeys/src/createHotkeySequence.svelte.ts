@@ -7,7 +7,7 @@ import {
   SequenceOptions,
   SequenceRegistrationHandle,
 } from '@tanstack/hotkeys'
-import { getDefaultHotkeysOptions } from './HotkeysCtx'
+import { getDefaultHotkeysOptions, ResolvedTarget, Target } from './HotkeysCtx'
 
 export interface CreateHotkeySequenceOptions extends Omit<
   SequenceOptions,
@@ -18,7 +18,14 @@ export interface CreateHotkeySequenceOptions extends Omit<
    * Can be a Svelte ref, direct DOM element, or null.
    * Defaults to document.
    */
-  target?: HTMLElement | Document | Window | null
+  target?: Target
+}
+
+function resolveTarget(target: Target): ResolvedTarget {
+  if (typeof target === 'function') {
+    return target() ?? null
+  }
+  return target
 }
 
 /**
@@ -84,7 +91,7 @@ export function createHotkeySequence(
   })
 
   // Track previous target and sequence to detect changes requiring re-registration
-  let prevTargetRef: HTMLElement | Document | Window | null = null
+  let prevTargetRef: ResolvedTarget = null
   let prevSequenceRef: string | null = null
 
   // Normalize to hotkey sequence string (join with spaces)
@@ -100,7 +107,7 @@ export function createHotkeySequence(
 
     // Resolve target inside the effect so refs are already attached after mount
     const resolvedTarget = optionsRef?.target
-      ? optionsRef.target
+      ? resolveTarget(optionsRef.target)
       : typeof document !== 'undefined'
         ? document
         : null

@@ -1,22 +1,7 @@
 <script lang="ts">
-  import {
-    createHotkey,
-    createHotkeySequence,
-  } from '../../../../../packages/svelte-hotkeys/dist'
+  import { createHotkeySequence } from '../../../../../packages/svelte-hotkeys/dist'
 
   let divRef = $state<HTMLDivElement | null>(null)
-
-  createHotkey(
-    'Mod+K',
-    () => {
-      console.log('Mod+K pressed')
-
-      if (divRef) {
-        divRef.style.backgroundColor = 'red'
-      }
-    },
-    { target: () => divRef },
-  )
 
   createHotkeySequence(['K', 'S'], () => {
     console.log('K K pressed')

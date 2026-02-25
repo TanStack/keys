@@ -1,4 +1,5 @@
 import { getKeyStateTracker } from '@tanstack/hotkeys'
+import { useStore } from '@tanstack/svelte-store'
 
 /**
  * Svelte function that returns an array of currently held keyboard keys.
@@ -23,7 +24,8 @@ import { getKeyStateTracker } from '@tanstack/hotkeys'
 export function getHeldKeys(): Array<string> {
   const tracker = getKeyStateTracker()
 
-  const heldKeys = $derived.by(() => tracker.store.state.heldKeys)
+  const heldKeys = useStore(tracker.store, (state) => state.heldKeys)
+    .current as Array<string>
 
   return heldKeys
 }

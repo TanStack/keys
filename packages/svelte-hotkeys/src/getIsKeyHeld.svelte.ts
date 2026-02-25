@@ -45,11 +45,10 @@ export function getIsKeyHeld(key: HeldKey): boolean {
   const tracker = getKeyStateTracker()
   const normalizedKey = key.toLowerCase()
 
-  const isKeyHeld = $derived(
+  const isKeyHeld = $derived.by(() =>
     tracker.store.state.heldKeys.some(
       (heldKey) => heldKey.toLowerCase() === normalizedKey,
     ),
   )
-
   return isKeyHeld
 }

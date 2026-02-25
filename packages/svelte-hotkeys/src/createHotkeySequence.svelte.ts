@@ -67,15 +67,15 @@ export function createHotkeySequence(
     ...options,
   } as CreateHotkeySequenceOptions
 
-  let manager = $state(getSequenceManager())
+  const manager = getSequenceManager()
 
   // Stable ref for registration handle
-  let registrationRef = $state<SequenceRegistrationHandle | null>(null)
+  let registrationRef: SequenceRegistrationHandle | null = null
 
   // Refs to capture current values for use in effect without adding dependencies
-  let callbackRef = $state(callback)
-  let optionsRef = $state(mergedOptions)
-  let managerRef = $state(manager)
+  let callbackRef = callback
+  let optionsRef = mergedOptions
+  let managerRef = manager
 
   $effect(() => {
     callbackRef = callback
@@ -84,8 +84,8 @@ export function createHotkeySequence(
   })
 
   // Track previous target and sequence to detect changes requiring re-registration
-  let prevTargetRef = $state<HTMLElement | Document | Window | null>(null)
-  let prevSequenceRef = $state<string | null>(null)
+  let prevTargetRef: HTMLElement | Document | Window | null = null
+  let prevSequenceRef: string | null = null
 
   // Normalize to hotkey sequence string (join with spaces)
   let hotkeySequenceString = $derived.by(() => formatHotkeySequence(sequence))

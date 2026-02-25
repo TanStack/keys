@@ -61,33 +61,30 @@ export function createHotkeyRecorder(
     ...options,
   } as HotkeyRecorderOptions
 
-  let recorderRef = $state<HotkeyRecorder | null>(null)
-
-  // Create recorder instance once
-  if (!recorderRef) {
-    recorderRef = new HotkeyRecorder(mergedOptions)
-  }
+  const recorder = new HotkeyRecorder(mergedOptions)
 
   // Sync options on every render (same pattern as createHotkey)
   // This ensures callbacks always have access to latest values
   $effect(() => {
-    if (recorderRef) {
-      recorderRef.setOptions(mergedOptions)
-    }
+    recorder.setOptions(mergedOptions)
   })
 
-  let isRecording = $derived(recorderRef?.store.state.isRecording)
-  let recordedHotkey = $derived(recorderRef?.store.state.recordedHotkey)
+  let isRecording = $derived.by(() => recorder.store.state.isRecording)
+  let recordedHotkey = $derived.by(() => recorder.store.state.recordedHotkey)
 
   onDestroy(() => {
-    recorderRef?.destroy()
+    recorder.destroy()
   })
 
   return {
-    isRecording,
-    recordedHotkey,
-    startRecording: () => recorderRef?.start(),
-    stopRecording: () => recorderRef?.stop(),
-    cancelRecording: () => recorderRef?.cancel(),
+    get isRecording() {
+      return isRecording
+    },
+    get recordedHotkey() {
+      return recordedHotkey
+    },
+    startRecording: () => recorder.start(),
+    stopRecording: () => recorder.stop(),
+    cancelRecording: () => recorder.cancel(),
   }
 }

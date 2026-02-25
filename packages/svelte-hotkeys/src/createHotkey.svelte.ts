@@ -85,12 +85,12 @@ export function createHotkey(
   const manager = getHotkeyManager()
 
   // Stable ref for registration handle
-  let registrationRef = $state<HotkeyRegistrationHandle | null>(null)
+  let registrationRef: HotkeyRegistrationHandle | null = null
 
   // Refs to capture current values for use in effect without adding dependencies
-  let callbackRef = $state(callback)
-  let optionsRef = $state(mergedOptions)
-  let managerRef = $state(manager)
+  let callbackRef = callback
+  let optionsRef = mergedOptions
+  let managerRef = manager
 
   $effect(() => {
     callbackRef = callback
@@ -99,8 +99,8 @@ export function createHotkey(
   })
 
   // Track previous target and hotkey to detect changes requiring re-registration
-  let prevTargetRef = $state<HTMLElement | Document | Window | null>(null)
-  let prevHotkeyRef = $state<string | null>(null)
+  let prevTargetRef: HTMLElement | Document | Window | null = null
+  let prevHotkeyRef: string | null = null
 
   // Normalize to hotkey string
   const platform = mergedOptions.platform ?? detectPlatform()

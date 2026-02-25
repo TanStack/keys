@@ -26,7 +26,7 @@ import { getKeyStateTracker } from '@tanstack/hotkeys'
 export function getHeldKeyCodesMap(): Record<string, string> {
   const tracker = getKeyStateTracker()
 
-  const heldKeyCodesMap = $derived(tracker.store.state.heldCodes)
+  const heldKeyCodesMap = $derived.by(() => tracker.store.state.heldCodes)
 
   return heldKeyCodesMap
 }

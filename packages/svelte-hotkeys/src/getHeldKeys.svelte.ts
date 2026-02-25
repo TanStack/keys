@@ -23,7 +23,7 @@ import { getKeyStateTracker } from '@tanstack/hotkeys'
 export function getHeldKeys(): Array<string> {
   const tracker = getKeyStateTracker()
 
-  const heldKeys = $derived(tracker.store.state.heldKeys)
+  const heldKeys = $derived.by(() => tracker.store.state.heldKeys)
 
   return heldKeys
 }

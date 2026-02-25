@@ -5,3 +5,5 @@ preferWorkspacePackages: true
 packages:
   - 'examples/**/*'
   - 'packages/*'
+onlyBuiltDependencies:
+  - esbuild

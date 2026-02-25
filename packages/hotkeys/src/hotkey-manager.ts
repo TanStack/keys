@@ -29,6 +29,21 @@ export interface HotkeyOptions {
   conflictBehavior?: ConflictBehavior
   /** Whether the hotkey is enabled. Defaults to true */
   enabled?: boolean
+  /**
+   * Custom event filter. Return `false` to suppress the hotkey for this event.
+   * Runs before all other checks except `enabled`.
+   *
+   * @example
+   * ```ts
+   * manager.register('K', callback, {
+   *   eventFilter: (event) => {
+   *     // Only fire when the target has a specific data attribute
+   *     return (event.target as HTMLElement)?.dataset?.hotkeys !== 'disabled'
+   *   }
+   * })
+   * ```
+   */
+  eventFilter?: (event: KeyboardEvent) => boolean
   /** The event type to listen for. Defaults to 'keydown' */
   eventType?: 'keydown' | 'keyup'
   /** Whether to ignore hotkeys when keyboard events originate from input-like elements (text inputs, textarea, select, contenteditable — button-type inputs like type=button/submit/reset are not ignored). Defaults based on hotkey: true for single keys and Shift/Alt combos; false for Ctrl/Meta shortcuts and Escape */
@@ -447,6 +462,14 @@ export class HotkeyManager {
       }
 
       if (!registration.options.enabled) {
+        continue
+      }
+
+      // Custom event filter runs before all other filtering
+      if (
+        registration.options.eventFilter &&
+        !registration.options.eventFilter(event)
+      ) {
         continue
       }
 

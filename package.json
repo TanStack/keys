@@ -81,6 +81,7 @@
     "@tanstack/preact-hotkeys": "workspace:*",
     "@tanstack/preact-hotkeys-devtools": "workspace:*",
     "@tanstack/react-hotkeys": "workspace:*",
-    "@tanstack/react-hotkeys-devtools": "workspace:*"
+    "@tanstack/react-hotkeys-devtools": "workspace:*",
+    "@tanstack/svelte-hotkeys": "workspace:*"
   }
 }

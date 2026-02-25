@@ -684,6 +684,9 @@ importers:
       '@tanstack/hotkeys':
         specifier: workspace:*
         version: link:../hotkeys
+      '@tanstack/svelte-store':
+        specifier: ^0.9.1
+        version: 0.9.1(svelte@5.53.1)
     devDependencies:
       '@sveltejs/package':
         specifier: ^2.4.0
@@ -1921,8 +1924,16 @@ packages:
     peerDependencies:
       solid-js: ^1.6.0
 
+  '@tanstack/store@0.8.1':
+    resolution: {integrity: sha512-PtOisLjUZPz5VyPRSCGjNOlwTvabdTBQ2K80DpVL1chGVr35WRxfeavAPdNq6pm/t7F8GhoR2qtmkkqtCEtHYw==}
+
   '@tanstack/store@0.9.1':
     resolution: {integrity: sha512-+qcNkOy0N1qSGsP7omVCW0SDrXtaDcycPqBDE726yryiA5eTDFpjBReaYjghVJwNf1pcPMyzIwTGlYjCSQR0Fg==}
+
+  '@tanstack/svelte-store@0.9.1':
+    resolution: {integrity: sha512-4RYp0CXSB9tjlUZNl29mjraWeRquKzuaW+bGGI4s3kS6BWatgt7BfX4OtoLT8MTBdepW9ARwqHZ3s8YGpfOZkQ==}
+    peerDependencies:
+      svelte: ^5.0.0
 
   '@tanstack/typedoc-config@0.3.3':
     resolution: {integrity: sha512-wVT2YfKDSpd+4f7fk6UaPIP3a2J7LSovlyVuFF1PH2yQb7gjqehod5zdFiwFyEXgvI9XGuFvvs1OehkKNYcr6A==}
@@ -5729,7 +5740,14 @@ snapshots:
       '@tanstack/store': 0.9.1
       solid-js: 1.9.11
 
+  '@tanstack/store@0.8.1': {}
+
   '@tanstack/store@0.9.1': {}
+
+  '@tanstack/svelte-store@0.9.1(svelte@5.53.1)':
+    dependencies:
+      '@tanstack/store': 0.8.1
+      svelte: 5.53.1
 
   '@tanstack/typedoc-config@0.3.3(typescript@5.9.3)':
     dependencies:

@@ -3,13 +3,19 @@
 
   let divRef = $state<HTMLDivElement | null>(null)
 
-  createHotkeySequence(['K', 'S'], () => {
-    console.log('K K pressed')
+  createHotkeySequence(
+    ['K', 'S'],
+    () => {
+      console.log('K K pressed')
 
-    if (divRef) {
-      divRef.style.backgroundColor = 'green'
-    }
-  })
+      if (divRef) {
+        divRef.style.backgroundColor = 'green'
+      }
+    },
+    {
+      target: () => divRef,
+    },
+  )
 </script>
 
 <div

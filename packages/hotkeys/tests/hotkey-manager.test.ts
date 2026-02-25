@@ -1056,6 +1056,84 @@ describe('HotkeyManager', () => {
     })
   })
 
+  describe('eventFilter option', () => {
+    it('should suppress hotkey when eventFilter returns false', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('K', callback, {
+        platform: 'mac',
+        ignoreInputs: false,
+        eventFilter: () => false,
+      })
+
+      document.dispatchEvent(createKeyboardEvent('keydown', 'k'))
+
+      expect(callback).not.toHaveBeenCalled()
+    })
+
+    it('should fire hotkey when eventFilter returns true', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('K', callback, {
+        platform: 'mac',
+        ignoreInputs: false,
+        eventFilter: () => true,
+      })
+
+      const event = createKeyboardEvent('keydown', 'k')
+      document.dispatchEvent(event)
+
+      expect(callback).toHaveBeenCalledWith(
+        event,
+        expect.objectContaining({ hotkey: 'K' }),
+      )
+    })
+
+    it('should pass the keyboard event to eventFilter', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+      const filter = vi.fn(() => true)
+
+      manager.register('K', callback, {
+        platform: 'mac',
+        ignoreInputs: false,
+        eventFilter: filter,
+      })
+
+      const event = createKeyboardEvent('keydown', 'k')
+      document.dispatchEvent(event)
+
+      expect(filter).toHaveBeenCalledWith(expect.any(KeyboardEvent))
+    })
+
+    it('should allow conditional filtering based on event properties', () => {
+      const manager = HotkeyManager.getInstance()
+      const callback = vi.fn()
+
+      manager.register('Mod+S', callback, {
+        platform: 'mac',
+        eventFilter: (event) => !event.repeat,
+      })
+
+      const repeatingEvent = new KeyboardEvent('keydown', {
+        key: 's',
+        metaKey: true,
+        repeat: true,
+        bubbles: true,
+      })
+      document.dispatchEvent(repeatingEvent)
+      expect(callback).not.toHaveBeenCalled()
+
+      const normalEvent = createKeyboardEvent('keydown', 's', {
+        metaKey: true,
+      })
+      document.dispatchEvent(normalEvent)
+      expect(callback).toHaveBeenCalledOnce()
+    })
+  })
+
   describe('conflict detection', () => {
     it('should warn by default when registering a conflicting hotkey', () => {
       const manager = HotkeyManager.getInstance()

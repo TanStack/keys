@@ -31,7 +31,7 @@ Surprisingly, in our experience, even AI often struggles to get hotkey managemen
   - `event.code` is used as a fallback for letter keys (A-Z) and digit keys (0-9) when `event.key` produces special characters (e.g., macOS Option+letter or Shift+number).
 
 - **Hotkey Registration**
-  - Centralized `HotkeyManager` with per-target listeners, conflict detection, and automatic input filtering
+  - Centralized `HotkeyManager` with per-target listeners, conflict detection, automatic input filtering, and custom event filtering via `eventFilter`
 
 - **Multi-Key Sequences**
   - Vim-style sequences (e.g., `['G', 'G']`, `['D', 'I', 'W']`) with configurable timeout

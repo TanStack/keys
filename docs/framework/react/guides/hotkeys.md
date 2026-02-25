@@ -50,6 +50,7 @@ useHotkey('Mod+S', callback, {
   eventType: 'keydown',
   requireReset: false,
   ignoreInputs: undefined, // smart default: false for Mod+S, true for single keys
+  eventFilter: undefined, // no filtering by default
   target: document,
   platform: undefined, // auto-detected
   conflictBehavior: 'warn',
@@ -157,6 +158,41 @@ useHotkey('Enter', () => submit(), { ignoreInputs: false })
 ```
 
 Set `ignoreInputs: false` or `true` explicitly to override the smart default.
+
+### `eventFilter`
+
+A custom filter function that receives the `KeyboardEvent` and returns `false` to suppress the hotkey. Runs before all other checks except `enabled`, giving you full control over when a hotkey should fire.
+
+```tsx
+// Ignore repeated key events (held-down keys)
+useHotkey('Mod+S', () => save(), {
+  eventFilter: (event) => !event.repeat,
+})
+
+// Only fire when the target has a specific data attribute
+useHotkey('K', () => openSearch(), {
+  eventFilter: (event) => {
+    return (event.target as HTMLElement)?.dataset?.hotkeys !== 'disabled'
+  },
+})
+
+// Custom input element filtering (replaces ignoreInputs with your own logic)
+useHotkey('K', () => doSomething(), {
+  ignoreInputs: false,
+  eventFilter: (event) => {
+    const target = event.target as HTMLElement
+    // Suppress in standard inputs AND custom rich-text editors
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target.classList.contains('rich-editor')
+    ) {
+      return false
+    }
+    return true
+  },
+})
+```
 
 ### `target`
 

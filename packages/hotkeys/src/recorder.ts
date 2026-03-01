@@ -258,9 +258,5 @@ export class HotkeyRecorder {
    */
   destroy(): void {
     this.stop()
-    this.store.setState(() => ({
-      isRecording: false,
-      recordedHotkey: null,
-    }))
   }
 }

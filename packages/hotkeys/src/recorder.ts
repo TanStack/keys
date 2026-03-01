@@ -19,6 +19,11 @@ export interface HotkeyRecorderState {
 }
 
 /**
+ * Initial idle state for the recorder, used when not recording.
+ */
+const IDLE_STATE: HotkeyRecorderState = { isRecording: false, recordedHotkey: null }
+
+/**
  * Options for configuring a HotkeyRecorder instance.
  */
 export interface HotkeyRecorderOptions {
@@ -74,10 +79,7 @@ export class HotkeyRecorder {
    * The TanStack Store instance containing the recorder state.
    * Use this to subscribe to state changes or access current state.
    */
-  readonly store: Store<HotkeyRecorderState> = new Store<HotkeyRecorderState>({
-    isRecording: false,
-    recordedHotkey: null,
-  })
+  readonly store: Store<HotkeyRecorderState> = new Store<HotkeyRecorderState>(IDLE_STATE)
 
   #keydownHandler: ((event: KeyboardEvent) => void) | null = null
   #options: HotkeyRecorderOptions
@@ -113,10 +115,7 @@ export class HotkeyRecorder {
     }
 
     // Update store state
-    this.store.setState(() => ({
-      isRecording: true,
-      recordedHotkey: null,
-    }))
+    this.store.setState(() => (IDLE_STATE))
 
     // Create keydown handler
     const handler = (event: KeyboardEvent) => {
@@ -172,10 +171,7 @@ export class HotkeyRecorder {
         }
 
         // Update store state immediately
-        this.store.setState(() => ({
-          isRecording: false,
-          recordedHotkey: finalHotkey,
-        }))
+        this.store.setState(() => (IDLE_STATE))
 
         // Call callback AFTER listener is removed and state is set
         this.#options.onRecord(finalHotkey)
@@ -199,10 +195,7 @@ export class HotkeyRecorder {
     }
 
     // Update store state
-    this.store.setState(() => ({
-      isRecording: false,
-      recordedHotkey: null,
-    }))
+    this.store.setState(() => (IDLE_STATE))
   }
 
   /**
@@ -219,10 +212,7 @@ export class HotkeyRecorder {
     }
 
     // Update store state
-    this.store.setState(() => ({
-      isRecording: false,
-      recordedHotkey: null,
-    }))
+    this.store.setState(() => (IDLE_STATE))
 
     // Call cancel callback
     this.#options.onCancel?.()

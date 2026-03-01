@@ -174,7 +174,10 @@ export class HotkeyRecorder {
         }
 
         // Update store state immediately
-        this.store.setState(() => (IDLE_STATE))
+        this.store.setState(() => ({
+          isRecording: false,
+          recordedHotkey: finalHotkey,
+        }))
 
         // Call callback AFTER listener is removed and state is set
         this.#options.onRecord(finalHotkey)

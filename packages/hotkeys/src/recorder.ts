@@ -115,7 +115,10 @@ export class HotkeyRecorder {
     }
 
     // Update store state
-    this.store.setState(() => (IDLE_STATE))
+    this.store.setState(() => ({
+      isRecording: true,
+      recordedHotkey: null,
+    }))
 
     // Create keydown handler
     const handler = (event: KeyboardEvent) => {
